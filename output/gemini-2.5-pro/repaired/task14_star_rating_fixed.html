@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Star Rating Component</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        /* Main component container */
+        .rating-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container for the star icons */
+        .stars-container {
+            direction: ltr; /* Ensures stars are left-to-right */
+        }
+
+        /* Individual star styling */
+        .star {
+            font-size: 3rem; /* Larger stars */
+            color: #767676; /* A11y Fix: Increased contrast for accessibility */
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            padding: 0 0.2rem;
+            /* Reset default button styles */
+            background: none;
+            border: none;
+            margin: 0;
+            font-family: inherit;
+        }
+
+        /* Style for stars on hover or when selected */
+        .star.hover,
+        .star.selected {
+            color: #ffc107; /* Gold color */
+        }
+
+        /* Message display area */
+        #rating-message {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            color: #333;
+            min-height: 1.5rem; /* Reserve space to prevent layout shift */
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rating-widget">
+        <div class="stars-container" role="group" aria-label="Product rating">
+            <button class="star" data-value="1" aria-label="1 star" aria-pressed="false">★</button>
+            <button class="star" data-value="2" aria-label="2 stars" aria-pressed="false">★</button>
+            <button class="star" data-value="3" aria-label="3 stars" aria-pressed="false">★</button>
+            <button class="star" data-value="4" aria-label="4 stars" aria-pressed="false">★</button>
+            <button class="star" data-value="5" aria-label="5 stars" aria-pressed="false">★</button>
+        </div>
+        <div id="rating-message" aria-live="polite"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = Array.from(document.querySelectorAll('.star'));
+            const starsContainer = document.querySelector('.stars-container');
+            const ratingMessage = document.getElementById('rating-message');
+            
+            let currentRating = 0; // Variable to store the locked rating
+
+            // Function to highlight stars up to a given value
+            function highlightStars(rating) {
+                const ratingValue = parseInt(rating, 10);
+                stars.forEach(star => {
+                    star.classList.toggle('hover', parseInt(star.dataset.value, 10) <= ratingValue);
+                });
+            }
+
+            // Function to set the permanent rating
+            function setRating(rating) {
+                currentRating = parseInt(rating, 10);
+                stars.forEach(star => {
+                    const isSelected = parseInt(star.dataset.value, 10) <= currentRating;
+                    star.classList.toggle('selected', isSelected);
+                    star.setAttribute('aria-pressed', String(isSelected));
+                });
+                
+                // Update the message
+                const starText = currentRating === 1 ? "star" : "stars";
+                // Use textContent instead of innerHTML to prevent DOM-XSS
+                ratingMessage.textContent = `You rated this ${currentRating} ${starText}!`;
+            }
+
+            // Function to reset temporary hover highlights
+            function resetHighlight() {
+                stars.forEach(star => star.classList.remove('hover'));
+            }
+
+            // Add events to each star
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => highlightStars(star.dataset.value));
+                star.addEventListener('focus', () => highlightStars(star.dataset.value));
+                star.addEventListener('click', () => setRating(star.dataset.value));
+            });
+
+            // Reset highlights when mouse or focus leaves the container
+            starsContainer.addEventListener('mouseleave', resetHighlight);
+            starsContainer.addEventListener('focusout', (e) => {
+                // If the element that receives focus is outside the container, reset
+                if (!starsContainer.contains(e.relatedTarget)) {
+                    resetHighlight();
+                }
+            });
+
+            // Add keyboard navigation with arrow keys
+            starsContainer.addEventListener('keydown', (e) => {
+                const focusedStar = document.activeElement;
+                // Ensure the focused element is one of our stars and an arrow key was pressed
+                if (!focusedStar.classList.contains('star') || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) {
+                    return;
+                }
+
+                e.preventDefault(); // Prevent page scrolling
+
+                const currentIndex = stars.indexOf(focusedStar);
+
+                if (e.key === 'ArrowRight' && currentIndex < stars.length - 1) {
+                    stars[currentIndex + 1].focus();
+                } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    stars[currentIndex - 1].focus();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .todo-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .input-group button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            background-color: #0a8927;
+            color: white;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .input-group button:hover {
+            background-color: #087d24;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+        }
+        li.completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        li span {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <div class="todo-container">
+        <div class="input-group">
+            <label for="taskInput" class="sr-only">Enter a new task</label>
+            <input type="text" id="taskInput" placeholder="Enter a new task" aria-label="Task input">
+            <button id="addTaskButton" aria-label="Add task">Add</button>
+        </div>
+        <ul id="taskList" aria-live="polite"></ul>
+    </div>
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const addTaskButton = document.getElementById('addTaskButton');
+        const taskList = document.getElementById('taskList');
+
+        addTaskButton.addEventListener('click', () => {
+            const taskText = taskInput.value.trim();
+            if (taskText !== '') {
+                const li = document.createElement('li');
+                const span = document.createElement('span');
+                span.textContent = taskText;
+                span.setAttribute('role', 'button');
+                span.setAttribute('tabindex', '0');
+                span.setAttribute('aria-label', `Mark task "${taskText}" as completed`);
+                li.appendChild(span);
+                taskList.appendChild(li);
+                taskInput.value = '';
+            }
+        });
+
+        taskList.addEventListener('click', (event) => {
+            if (event.target.tagName === 'SPAN') {
+                const parentLi = event.target.parentElement;
+                parentLi.classList.toggle('completed');
+                const isCompleted = parentLi.classList.contains('completed');
+                event.target.setAttribute('aria-label', isCompleted ? `Mark task "${event.target.textContent}" as incomplete` : `Mark task "${event.target.textContent}" as completed`);
+            }
+        });
+
+        taskList.addEventListener('keydown', (event) => {
+            if (event.target.tagName === 'SPAN' && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault();
+                const parentLi = event.target.parentElement;
+                parentLi.classList.toggle('completed');
+                const isCompleted = parentLi.classList.contains('completed');
+                event.target.setAttribute('aria-label', isCompleted ? `Mark task "${event.target.textContent}" as incomplete` : `Mark task "${event.target.textContent}" as completed`);
+            }
+        });
+    </script>
+</body>
+</html>

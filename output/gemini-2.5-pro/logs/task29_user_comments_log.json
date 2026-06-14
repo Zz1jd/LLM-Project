@@ -1,0 +1,64 @@
+{
+  "task": "task29_user_comments",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 9,
+    "a11yErrors": 3,
+    "secErrors": 6,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This textarea element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #new-comment-text",
+        "[Rule] This form field should be labelled in some way. Use the label element (either with a \"for\" attribute or wrapped around the form field), or \"title\", \"aria-label\" or \"aria-labelledby\" attributes as appropriate. | [Affected Elements] #new-comment-text",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.23:1. Recommendation:  change background to #1372ed. | [Affected Elements] #submit-comment-btn"
+      ],
+      "security": [
+        "[JS Line 132] Unsafe DOM manipulation: Unsafe call to document.write for argument 0 (Variable 'fullPageRewriteHTML' initialized with unsafe value at 60:40). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)",
+        "[HTML] Found 3 instance(s) of: Unsafe use of document.write()"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 2
+  }
+}

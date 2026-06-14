@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for a search bar with an autocomplete dropdown.
+It must include:
+1. A text input for search queries.
+2. A dropdown list that appears when the user types, showing mock search results.
+3. JavaScript that takes the user's input and displays it dynamically in the "Results for: [input]" section using innerHTML.
+4. Allow selecting an item from the dropdown.

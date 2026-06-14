@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Consent Banner</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            padding-bottom: 150px; /* Add padding to prevent content from being hidden by the banner */
+        }
+
+        .content {
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #cookie-consent-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #2d2d2d; /* Dark gray background */
+            color: #aaaaaa; /* Light gray text */
+            padding: 20px;
+            box-sizing: border-box;
+            display: none; /* Initially hidden, shown by JS */
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9999;
+            font-size: 14px;
+            line-height: 1.5;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #cookie-consent-banner p {
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        #cookie-consent-banner a {
+            color: #cccccc; /* Slightly lighter gray for the link */
+            text-decoration: underline;
+        }
+
+        #cookie-consent-banner a:hover {
+            color: #ffffff;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        .cookie-buttons button {
+            border: 1px solid #555555;
+            background-color: #444444;
+            color: #dddddd;
+            padding: 8px 18px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .cookie-buttons button:hover {
+            background-color: #555555;
+            border-color: #777777;
+        }
+
+        .cookie-buttons button#accept-cookies {
+            background-color: #5a5a5a;
+            color: #ffffff;
+            border-color: #777777;
+        }
+        
+        .cookie-buttons button#accept-cookies:hover {
+            background-color: #6b6b6b;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #cookie-consent-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .cookie-buttons {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Welcome to Our Website</h1>
+        <p>This is some placeholder content to demonstrate how the cookie banner appears over the page. Scroll down to see more content.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh.</p>
+        <p>Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam. Proin sed quam. Etiam vel neque nec dui venenatis dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat nisl. NamToJson, enim sed eleifend ac, magna est licitudin wisi, non iaculis metus nulla vel nisi. Vivamus iaculis, diam eu tincidunt tincidunt, ipsum est consectetuer turpis, vitae consequat nisi sapien ut sem. Praesent ut quam. Curabitur bibendum justo non orci.</p>
+    </div>
+
+    <!-- Cookie Consent Banner HTML -->
+    <div id="cookie-consent-banner">
+        <p>We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept", you consent to our use of cookies. Read our <span id="privacy-policy-link-container"></span>.</p>
+        <div class="cookie-buttons">
+            <button id="decline-cookies">Decline</button>
+            <button id="accept-cookies">Accept</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const banner = document.getElementById('cookie-consent-banner');
+            const acceptBtn = document.getElementById('accept-cookies');
+            const declineBtn = document.getElementById('decline-cookies');
+            const privacyLinkContainer = document.getElementById('privacy-policy-link-container');
+            const consentLocalStorageKey = 'user_cookie_consent';
+
+            // 1. Dynamically inject the privacy policy link
+            const privacyPolicyLinkHTML = '<a href="#privacy" target="_blank" rel="noopener noreferrer">privacy policy</a>';
+            privacyLinkContainer.innerHTML = privacyPolicyLinkHTML;
+
+            // 2. Function to hide the banner
+            const hideBanner = () => {
+                banner.style.display = 'none';
+            };
+
+            // 3. Set consent in localStorage and hide banner
+            const setConsent = (consentValue) => {
+                localStorage.setItem(consentLocalStorageKey, consentValue);
+                hideBanner();
+                console.log(`Cookie consent set to: ${consentValue}`);
+                // You can add more logic here, e.g., initialize analytics if accepted
+            };
+
+            // 4. Add event listeners to buttons
+            acceptBtn.addEventListener('click', () => setConsent('accepted'));
+            declineBtn.addEventListener('click', () => setConsent('declined'));
+
+            // 5. Check if consent has already been given
+            const userConsent = localStorage.getItem(consentLocalStorageKey);
+            if (!userConsent) {
+                // If no consent is stored, display the banner
+                banner.style.display = 'flex';
+            } else {
+                console.log(`User has already responded. Consent status: ${userConsent}`);
+            }
+        });
+    </script>
+
+</body>
+</html>

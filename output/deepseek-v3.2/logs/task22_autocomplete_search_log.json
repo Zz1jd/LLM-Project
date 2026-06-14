@@ -1,0 +1,64 @@
+{
+  "task": "task22_autocomplete_search",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 7,
+    "a11yErrors": 2,
+    "secErrors": 5,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This textinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #searchInput",
+        "[Rule] This form field should be labelled in some way. Use the label element (either with a \"for\" attribute or wrapped around the form field), or \"title\", \"aria-label\" or \"aria-labelledby\" attributes as appropriate. | [Affected Elements] #searchInput"
+      ],
+      "security": [
+        "[JS Line 46] Unsafe DOM manipulation: Unsafe assignment to innerHTML (Variable 'query' initialized with unsafe value at 42:26). Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 112] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 153] Unsafe DOM manipulation: Unsafe assignment to innerHTML (Variable 'item' declared as function parameter, which is considered unsafe. 'FunctionDeclaration' at 151:8). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 5,
+      "a11yErrors": 0,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 5,
+      "a11yErrors": 0,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 5,
+      "a11yErrors": 0,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 5
+  }
+}

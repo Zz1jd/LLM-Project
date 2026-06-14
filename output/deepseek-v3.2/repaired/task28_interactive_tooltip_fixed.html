@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tooltip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .description {
+            color: #6c797a;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .button-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .info-button {
+            background-color: #177bbe;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(23, 123, 190, 0.2);
+        }
+        
+        .info-button:hover {
+            background-color: #1469a3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(23, 123, 190, 0.3);
+        }
+        
+        .info-button:active {
+            transform: translateY(0);
+        }
+        
+        .info-button:focus {
+            outline: 2px solid #2c3e50;
+            outline-offset: 2px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: #2c3e50;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            width: 280px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .tooltip.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+        
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 18px;
+            color: #ecf0f1;
+        }
+        
+        .tooltip-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #bdc3c7;
+        }
+        
+        .learn-more-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 4px 0;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        
+        .learn-more-link:hover {
+            border-bottom: 1px solid #3498db;
+        }
+        
+        .learn-more-link:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        
+        .instructions {
+            margin-top: 40px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #142122;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Tooltip Demo</h1>
+        <p class="description">This example demonstrates a custom tooltip that appears when hovering over the button below. The tooltip is positioned dynamically using JavaScript.</p>
+        
+        <div class="button-wrapper" id="buttonWrapper">
+            <button class="info-button" id="infoButton" aria-describedby="tooltip">Hover for info</button>
+            <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true">
+                <div class="tooltip-title">Did you know?</div>
+                <p class="tooltip-text">Tooltips are small contextual information boxes that appear when users hover over or focus on an element. They provide additional details without cluttering the interface.</p>
+                <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role" target="_blank" rel="noopener noreferrer" class="learn-more-link">Learn more about tooltips</a>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How it works:</h3>
+            <ul>
+                <li>Hover over the button to see the tooltip appear above it</li>
+                <li>The tooltip is positioned dynamically using JavaScript calculations</li>
+                <li>Click the "Learn more" link to open a resource about tooltip accessibility</li>
+                <li>The tooltip includes smooth fade-in/out transitions</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('infoButton');
+            const tooltip = document.getElementById('tooltip');
+            const buttonWrapper = document.getElementById('buttonWrapper');
+            
+            // Position the tooltip above the button
+            function positionTooltip() {
+                const buttonRect = button.getBoundingClientRect();
+                const tooltipHeight = tooltip.offsetHeight;
+                
+                // Calculate position above the button
+                const topPosition = -tooltipHeight - 10; // 10px gap
+                
+                // Center the tooltip horizontally relative to the button
+                const tooltipWidth = tooltip.offsetWidth;
+                const buttonWidth = button.offsetWidth;
+                const leftPosition = (buttonWidth - tooltipWidth) / 2;
+                
+                tooltip.style.top = `${topPosition}px`;
+                tooltip.style.left = `${leftPosition}px`;
+            }
+            
+            // Show the tooltip
+            function showTooltip() {
+                positionTooltip();
+                tooltip.classList.add('active');
+                tooltip.setAttribute('aria-hidden', 'false');
+            }
+            
+            // Hide the tooltip
+            function hideTooltip() {
+                tooltip.classList.remove('active');
+                tooltip.setAttribute('aria-hidden', 'true');
+            }
+            
+            // Event listeners for hover
+            button.addEventListener('mouseenter', showTooltip);
+            button.addEventListener('mouseleave', hideTooltip);
+            
+            // Also show tooltip when focusing the button (for accessibility)
+            button.addEventListener('focus', showTooltip);
+            button.addEventListener('blur', hideTooltip);
+            
+            // Keep tooltip visible when hovering over it
+            tooltip.addEventListener('mouseenter', showTooltip);
+            tooltip.addEventListener('mouseleave', hideTooltip);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (tooltip.classList.contains('active')) {
+                    positionTooltip();
+                }
+            });
+            
+            // Initialize tooltip position (hidden)
+            positionTooltip();
+            
+            // Safe event handling for tooltip link
+            const learnMoreLink = tooltip.querySelector('.learn-more-link');
+            if (learnMoreLink) {
+                learnMoreLink.addEventListener('click', function(e) {
+                    console.log('Tooltip link clicked - opening external resource');
+                    // In a real application, you might track this event
+                });
+            }
+        });
+    </script>
+</body>
+</html>

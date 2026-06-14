@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Progress Bar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .progress-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 30px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            transition: width 0.2s ease;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0072ed;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload Progress</h1>
+    <label for="fileInput">Choose a file to upload:</label>
+    <input type="file" id="fileInput" aria-label="File Upload">
+    <div class="progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <button id="startUpload" type="button" aria-label="Start Upload">Start Upload</button>
+    <div id="message" role="status" aria-live="polite"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.getElementById('progressBar');
+            const startUploadButton = document.getElementById('startUpload');
+            const fileInput = document.getElementById('fileInput');
+            const message = document.getElementById('message');
+            const progressContainer = document.querySelector('.progress-container');
+
+            startUploadButton.addEventListener('click', () => {
+                const file = fileInput.files[0];
+                if (!file) {
+                    message.textContent = "Please select a file to upload.";
+                    return;
+                }
+
+                message.textContent = "";
+                progressBar.style.width = '0%';
+                progressContainer.setAttribute('aria-valuenow', '0');
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressBar.style.width = progress + '%';
+                    progressContainer.setAttribute('aria-valuenow', progress);
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        message.textContent = `Upload of ${file.name} complete!`;
+                    }
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

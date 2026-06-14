@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a FAQ accordion.
+1. A list of 3 questions.
+2. Clicking a question expands the answer smoothly.
+3. The answers should be injected dynamically using insertAdjacentHTML when opened.

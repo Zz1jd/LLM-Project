@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        /* Basic Reset & Body Styling */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #222;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            width: 90%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard */
+        }
+
+        /* Slide Wrapper for smooth transitions */
+        .carousel-slide {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .slide-item {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .slide-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Navigation Buttons */
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            font-size: 2.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .carousel-button:hover,
+        .carousel-button:focus {
+            background-color: rgba(0, 0, 0, 0.7);
+            outline: 2px solid white;
+            outline-offset: -2px;
+        }
+
+        .carousel-button.prev {
+            left: 15px;
+        }
+
+        .carousel-button.next {
+            right: 15px;
+        }
+
+        /* Dynamic Caption */
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        /* Navigation Dots */
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            z-index: 10;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 6px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            padding: 0;
+        }
+        
+        .dot:hover {
+            transform: scale(1.2);
+        }
+
+        .dot[aria-current="true"] {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="carousel-container" role="region" aria-roledescription="carousel" aria-label="Image gallery">
+        <div class="carousel-slide" id="carousel-slide-container">
+            <!-- Images will be dynamically inserted here by JavaScript -->
+        </div>
+        <button class="carousel-button prev" aria-label="Previous Slide" aria-controls="carousel-slide-container"><span aria-hidden="true">&larr;</span></button>
+        <button class="carousel-button next" aria-label="Next Slide" aria-controls="carousel-slide-container"><span aria-hidden="true">&rarr;</span></button>
+        <div class="carousel-caption" aria-live="polite"></div>
+        <div class="carousel-dots"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data for the carousel slides (image source and caption)
+            const slidesData = [
+                {
+                    src: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1600',
+                    caption: 'Misty Mountain Landscape'
+                },
+                {
+                    src: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1600',
+                    caption: 'Forest Canopy from Above'
+                },
+                {
+                    src: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1600',
+                    caption: 'House by the Lake'
+                },
+                {
+                    src: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1600',
+                    caption: 'Sunlight Through the Trees'
+                },
+                {
+                    src: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1600',
+                    caption: 'Majestic Waterfall'
+                }
+            ];
+
+            // DOM element references
+            const carouselSlide = document.querySelector('.carousel-slide');
+            const prevButton = document.querySelector('.carousel-button.prev');
+            const nextButton = document.querySelector('.carousel-button.next');
+            const captionElement = document.querySelector('.carousel-caption');
+            const dotsContainer = document.querySelector('.carousel-dots');
+
+            let currentIndex = 0;
+            let dots = [];
+            let slideItems = [];
+
+            // Initialize the carousel
+            function init() {
+                // Create image and dot elements from the data array
+                slidesData.forEach((slide, index) => {
+                    const slideItem = document.createElement('div');
+                    slideItem.className = 'slide-item';
+                    slideItem.setAttribute('role', 'group');
+                    slideItem.setAttribute('aria-roledescription', 'slide');
+                    slideItem.setAttribute('aria-label', `${index + 1} of ${slidesData.length}`);
+                    slideItem.id = `slide-${index + 1}`;
+
+                    const img = document.createElement('img');
+                    
+                    // SECURITY FIX: Ensure the URL protocol is safe to prevent javascript: URLs.
+                    if (slide.src && (slide.src.startsWith('https://') || slide.src.startsWith('http://'))) {
+                        img.src = slide.src;
+                    } else {
+                        img.src = ''; // Assign a blank or placeholder source for invalid URLs
+                        console.error(`Invalid or insecure image URL blocked: ${slide.src}`);
+                    }
+                    
+                    img.alt = slide.caption;
+                    
+                    slideItem.appendChild(img);
+                    carouselSlide.appendChild(slideItem);
+                    slideItems.push(slideItem);
+
+                    const dot = document.createElement('button');
+                    dot.classList.add('dot');
+                    dot.dataset.index = index;
+                    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                    // ACCESSIBILITY FIX: Associate dot with the content it controls
+                    dot.setAttribute('aria-controls', 'carousel-slide-container');
+                    dotsContainer.appendChild(dot);
+                    dots.push(dot);
+                });
+
+                // Set the initial state
+                goToSlide(0);
+            }
+
+            // Function to navigate to a specific slide
+            function goToSlide(index) {
+                // Update the transform property for the sliding effect
+                carouselSlide.style.transform = `translateX(-${index * 100}%)`;
+                
+                // Hide non-active slides from screen readers
+                slideItems.forEach((item, i) => {
+                    item.setAttribute('aria-hidden', i !== index);
+                });
+
+                updateCaption(index);
+                updateDots(index);
+
+                currentIndex = index;
+            }
+
+            // Function to update the caption text using textContent to prevent DOM-XSS
+            function updateCaption(index) {
+                captionElement.textContent = slidesData[index].caption;
+            }
+
+            // Function to update the active state of navigation dots
+            function updateDots(index) {
+                dots.forEach(dot => dot.removeAttribute('aria-current'));
+                dots[index].setAttribute('aria-current', 'true');
+            }
+
+            // Event Listeners for next/previous buttons
+            nextButton.addEventListener('click', () => {
+                const newIndex = (currentIndex + 1) % slidesData.length;
+                goToSlide(newIndex);
+            });
+
+            prevButton.addEventListener('click', () => {
+                const newIndex = (currentIndex - 1 + slidesData.length) % slidesData.length;
+                goToSlide(newIndex);
+            });
+
+            // Event Listener for dots container (using event delegation)
+            dotsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dot')) {
+                    const index = parseInt(e.target.dataset.index, 10);
+                    goToSlide(index);
+                }
+            });
+
+            // Start the carousel
+            init();
+        });
+    </script>
+
+</body>
+</html>

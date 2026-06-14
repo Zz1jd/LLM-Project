@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Consent Banner</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #ccc;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #cookie-banner p {
+            margin: 0;
+            font-size: 14px;
+        }
+        #cookie-banner a {
+            color: #ccc;
+            text-decoration: underline;
+        }
+        #cookie-banner a:hover {
+            color: #fff;
+        }
+        #cookie-banner .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        #cookie-banner button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #cookie-banner .accept-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #cookie-banner .decline-btn {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="cookie-banner">
+        <p>
+            We use cookies to improve your experience. Read our 
+            <a id="privacy-policy-link" href="#" target="_blank"></a>.
+        </p>
+        <div class="buttons">
+            <button class="accept-btn" onclick="handleAccept()">Accept</button>
+            <button class="decline-btn" onclick="handleDecline()">Decline</button>
+        </div>
+    </div>
+
+    <script>
+        // Dynamically inject privacy policy link text
+        document.getElementById('privacy-policy-link').innerHTML = 'Privacy Policy';
+
+        // Handle Accept button click
+        function handleAccept() {
+            alert('You have accepted cookies.');
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+
+        // Handle Decline button click
+        function handleDecline() {
+            alert('You have declined cookies.');
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

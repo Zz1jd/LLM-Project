@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Component</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #c3cfe2;
+            border-radius: 12px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f9fafc;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #4a6cf7;
+            background-color: #f0f4ff;
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #4a6cf7;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-info {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9fafc;
+            display: none;
+        }
+        
+        .file-info.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .file-info-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .file-details {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4a6cf7;
+        }
+        
+        .file-icon {
+            font-size: 24px;
+            color: #4a6cf7;
+            margin-right: 15px;
+        }
+        
+        .file-name {
+            font-size: 16px;
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .success-message {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #e8f7ef;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        
+        .success-message.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-title {
+            font-size: 16px;
+            color: #28a745;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .success-content {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .success-content .file-name {
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .instructions {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f0f4ff;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .instructions h3 {
+            color: #4a6cf7;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .upload-zone {
+                padding: 40px 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Upload Component</h1>
+        <p class="description">Drag and drop your image or click to browse files</p>
+        
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Drag & Drop Your Image Here</div>
+            <div class="upload-subtext">or click to select a file</div>
+            <input type="file" id="fileInput" class="file-input" accept="image/*">
+        </div>
+        
+        <div class="file-info" id="fileInfo">
+            <div class="file-info-title">Selected File:</div>
+            <div class="file-details">
+                <div class="file-icon">📄</div>
+                <div class="file-name" id="fileName">No file selected</div>
+            </div>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <div class="success-title">Upload Successful!</div>
+            <div class="success-content" id="successContent"></div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <p>1. Drag and drop an image file directly onto the upload zone</p>
+            <p>2. Or click on the upload zone to browse for an image file</p>
+            <p>3. Only image files are accepted (JPEG, PNG, GIF, etc.)</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const successMessage = document.getElementById('successMessage');
+            const successContent = document.getElementById('successContent');
+            
+            // Click on upload zone to trigger file input
+            uploadZone.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle file selection via file input
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+            
+            // Drag and drop event handlers
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+            
+            uploadZone.addEventListener('dragleave', function() {
+                uploadZone.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Handle the uploaded file
+            function handleFileUpload(file) {
+                // Check if file is an image
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file (JPEG, PNG, GIF, etc.)');
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileInfo.classList.add('active');
+                
+                // Display success message with file name
+                successContent.innerHTML = `Your file <span class="file-name">"${file.name}"</span> has been uploaded successfully!`;
+                successMessage.classList.add('active');
+                
+                // Scroll success message into view
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    </script>
+</body>
+</html>

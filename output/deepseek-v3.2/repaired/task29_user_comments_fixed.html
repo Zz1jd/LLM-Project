@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Comments Section</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .description {
+            color: #6c797a;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+        
+        .comment-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .form-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .submit-btn {
+            background-color: #177bbe;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .comments-section {
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: "💬";
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .comments-list {
+            list-style-type: none;
+        }
+        
+        .comment-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2ecc71;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+        }
+        
+        .comment-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .comment-time {
+            color: #69797a;
+            font-size: 0.85rem;
+        }
+        
+        .comment-content {
+            color: #34495e;
+            font-size: 1rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .empty-comments {
+            text-align: center;
+            padding: 40px 20px;
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .empty-comments::before {
+            content: "📝";
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .proper-btn {
+            background-color: #00893a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-left: 10px;
+        }
+        
+        .proper-btn:hover {
+            background-color: #007a35;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .comment-form {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comments Section</h1>
+        <p class="description">Share your thoughts and join the conversation. Write your comment below and click submit to add it to the list.</p>
+        
+        <div class="comment-form">
+            <h3 class="form-title">Add a new comment</h3>
+            <label for="commentInput">Your comment</label>
+            <textarea id="commentInput" placeholder="Write your comment here..." aria-label="Comment input"></textarea>
+            <button id="submitBtn" class="submit-btn">Submit Comment</button>
+        </div>
+        
+        <div class="comments-section">
+            <h3 class="section-title">Comments</h3>
+            <ul id="commentsList" class="comments-list">
+                <li class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">Alex Johnson</span>
+                        <span class="comment-time">2 hours ago</span>
+                    </div>
+                    <p class="comment-content">This is a great discussion! I really appreciate the insights shared here.</p>
+                </li>
+                <li class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">Sam Rivera</span>
+                        <span class="comment-time">Yesterday</span>
+                    </div>
+                    <p class="comment-content">Thanks for putting this together. Looking forward to reading more perspectives on this topic.</p>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <strong>Note:</strong> This demo originally used document.write() to add new comments, which would overwrite the entire page. This has been replaced with safe DOM manipulation methods.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentInput = document.getElementById('commentInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const commentsList = document.getElementById('commentsList');
+            
+            // Function to get current time in a readable format
+            function getCurrentTime() {
+                const now = new Date();
+                const options = { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                };
+                return now.toLocaleTimeString([], options) + ' today';
+            }
+            
+            // Function to create a comment element safely
+            function createCommentElement(author, time, content) {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                
+                const header = document.createElement('div');
+                header.className = 'comment-header';
+                
+                const authorSpan = document.createElement('span');
+                authorSpan.className = 'comment-author';
+                authorSpan.textContent = author;
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'comment-time';
+                timeSpan.textContent = time;
+                
+                header.appendChild(authorSpan);
+                header.appendChild(timeSpan);
+                
+                const contentPara = document.createElement('p');
+                contentPara.className = 'comment-content';
+                contentPara.textContent = content;
+                
+                li.appendChild(header);
+                li.appendChild(contentPara);
+                
+                return li;
+            }
+            
+            // Function to add a comment using proper DOM manipulation
+            function addCommentProperly(commentText) {
+                if (!commentText.trim()) {
+                    alert('Please write a comment before submitting.');
+                    return;
+                }
+                
+                const newComment = createCommentElement('You', getCurrentTime(), commentText);
+                commentsList.insertBefore(newComment, commentsList.firstChild);
+                commentInput.value = '';
+                alert('Comment added successfully!');
+            }
+            
+            // Event listener for the submit button
+            submitBtn.addEventListener('click', function() {
+                const commentText = commentInput.value;
+                addCommentProperly(commentText);
+            });
+            
+            // Allow submitting with Ctrl+Enter
+            commentInput.addEventListener('keydown', function(event) {
+                if (event.ctrlKey && event.key === 'Enter') {
+                    const commentText = commentInput.value;
+                    addCommentProperly(commentText);
+                }
+            });
+            
+            // For demonstration: Add a button to show the proper way
+            const properMethodBtn = document.createElement('button');
+            properMethodBtn.textContent = 'Add Comment (Proper DOM Method)';
+            properMethodBtn.className = 'proper-btn';
+            properMethodBtn.addEventListener('click', function() {
+                const commentText = commentInput.value;
+                addCommentProperly(commentText);
+            });
+            
+            submitBtn.parentNode.appendChild(properMethodBtn);
+        });
+    </script>
+</body>
+</html>

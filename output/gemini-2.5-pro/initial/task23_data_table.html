@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Table</title>
+    <style>
+        :root {
+            --primary-bg: #f8f9fa;
+            --table-border-color: #dee2e6;
+            --header-bg: #e9ecef;
+            --row-hover-bg: #f1f3f5;
+            --text-color: #212529;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--table-border-color);
+        }
+
+        thead th {
+            background-color: var(--header-bg);
+            font-weight: 600;
+            position: relative;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        tbody tr:hover {
+            background-color: var(--row-hover-bg);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sortable-header:hover {
+            background-color: #dbe1e6;
+        }
+
+        .sortable-header::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            margin-left: 8px;
+            opacity: 0.3;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .sortable-header.sort-asc::after {
+            border-bottom: 5px solid var(--text-color);
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .sortable-header.sort-desc::after {
+            border-top: 5px solid var(--text-color);
+            opacity: 1;
+            transform: translateY(3px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="sortable-header" data-column="name">Name</th>
+                    <th class="sortable-header" data-column="email">Email</th>
+                    <th class="sortable-header" data-column="role">Role</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+                <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. DATA
+            const users = [
+                { name: 'Zara Ali', email: 'zara.ali@example.com', role: 'Developer' },
+                { name: 'John Doe', email: 'john.doe@example.com', role: 'Admin' },
+                { name: 'Jane Smith', email: 'jane.smith@example.com', role: 'Designer' },
+                { name: 'Peter Jones', email: 'peter.jones@example.com', role: 'Project Manager' },
+                { name: 'Mary Johnson', email: 'mary.j@example.com', role: 'Developer' },
+                { name: 'Chris Lee', email: 'chris.lee@example.com', role: 'User' },
+                { name: 'Alice Williams', email: 'alice.w@example.com', role: 'Designer' },
+            ];
+
+            // 2. STATE
+            let currentSort = {
+                column: null,
+                direction: 'asc' // 'asc' or 'desc'
+            };
+
+            // 3. REFERENCES to DOM elements
+            const tableBody = document.getElementById('user-table-body');
+            const headers = document.querySelectorAll('.sortable-header');
+
+            // 4. FUNCTIONS
+            
+            /**
+             * Renders the table rows based on the provided data array.
+             * @param {Array<Object>} data - The array of user objects to render.
+             */
+            function renderTable(data) {
+                // Clear existing table body
+                tableBody.innerHTML = '';
+
+                // Create and append a row for each user
+                data.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            /**
+             * Sorts the user data and re-renders the table.
+             * @param {string} column - The key to sort the user objects by.
+             */
+            function sortAndRender(column) {
+                // Determine sort direction
+                if (currentSort.column === column) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.column = column;
+                    currentSort.direction = 'asc';
+                }
+
+                // Sort the data
+                users.sort((a, b) => {
+                    const valA = a[column].toLowerCase();
+                    const valB = b[column].toLowerCase();
+                    
+                    let comparison = 0;
+                    if (valA > valB) {
+                        comparison = 1;
+                    } else if (valA < valB) {
+                        comparison = -1;
+                    }
+                    
+                    return currentSort.direction === 'desc' ? comparison * -1 : comparison;
+                });
+
+                // Update header styles
+                updateHeaderStyles();
+                
+                // Re-render the table with sorted data
+                renderTable(users);
+            }
+
+            /**
+             * Updates the CSS classes on headers to show the sort indicator.
+             */
+            function updateHeaderStyles() {
+                headers.forEach(header => {
+                    const column = header.getAttribute('data-column');
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (column === currentSort.column) {
+                        header.classList.add(currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+                    }
+                });
+            }
+
+            // 5. EVENT LISTENERS
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-column');
+                    sortAndRender(column);
+                });
+            });
+
+            // 6. INITIAL RENDER
+            renderTable(users);
+        });
+    </script>
+
+</body>
+</html>

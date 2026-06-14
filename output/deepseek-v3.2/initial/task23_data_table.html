@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive User Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 30px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4f6df5 0%, #3a56d5 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            opacity: 0.85;
+            font-size: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        thead {
+            background-color: #f8f9fc;
+        }
+        
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        th:hover {
+            background-color: #edf2f7;
+        }
+        
+        th.sortable::after {
+            content: "↕";
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+        
+        th.sorted-asc::after {
+            content: "↑";
+            opacity: 1;
+            color: #4f6df5;
+        }
+        
+        th.sorted-desc::after {
+            content: "↓";
+            opacity: 1;
+            color: #4f6df5;
+        }
+        
+        td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #eef2f7;
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .role {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .role.admin {
+            background-color: #e8f4ff;
+            color: #2c7be5;
+        }
+        
+        .role.editor {
+            background-color: #e6f7ed;
+            color: #00a854;
+        }
+        
+        .role.viewer {
+            background-color: #f9f0ff;
+            color: #722ed1;
+        }
+        
+        .role.user {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        footer {
+            padding: 20px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8f9fc;
+        }
+        
+        .instructions {
+            background-color: #f8f9fc;
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                border-radius: 8px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>User Management</h1>
+            <p class="subtitle">Interactive table with sorting and hover effects</p>
+        </header>
+        
+        <div class="instructions">
+            <p>Click on any column header to sort the table by that column. Click again to reverse the sort order.</p>
+        </div>
+        
+        <div class="table-container">
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-column="name">Name</th>
+                        <th class="sortable" data-column="email">Email</th>
+                        <th class="sortable" data-column="role">Role</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Users will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <footer>
+            <p>Interactive Data Table • Click headers to sort • Hover over rows for highlight effect</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample user data
+        const users = [
+            { name: "Alex Johnson", email: "alex.johnson@example.com", role: "Admin" },
+            { name: "Maria Garcia", email: "maria.garcia@example.com", role: "Editor" },
+            { name: "David Smith", email: "david.smith@example.com", role: "Viewer" },
+            { name: "Sarah Williams", email: "sarah.williams@example.com", role: "User" },
+            { name: "James Miller", email: "james.miller@example.com", role: "Admin" },
+            { name: "Lisa Brown", email: "lisa.brown@example.com", role: "Editor" },
+            { name: "Robert Wilson", email: "robert.wilson@example.com", role: "User" },
+            { name: "Emily Davis", email: "emily.davis@example.com", role: "Viewer" },
+            { name: "Michael Taylor", email: "michael.taylor@example.com", role: "Admin" },
+            { name: "Jennifer Lee", email: "jennifer.lee@example.com", role: "Editor" }
+        ];
+
+        // State for sorting
+        let currentSort = {
+            column: 'name',
+            direction: 'asc' // 'asc' or 'desc'
+        };
+
+        // DOM elements
+        const tableBody = document.getElementById('tableBody');
+        const sortableHeaders = document.querySelectorAll('.sortable');
+
+        // Initialize the table
+        function initTable() {
+            renderTable(users);
+            setupSorting();
+        }
+
+        // Render the table with user data
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                
+                // Name cell
+                const nameCell = document.createElement('td');
+                nameCell.textContent = user.name;
+                
+                // Email cell
+                const emailCell = document.createElement('td');
+                emailCell.textContent = user.email;
+                
+                // Role cell with styling
+                const roleCell = document.createElement('td');
+                const roleSpan = document.createElement('span');
+                roleSpan.textContent = user.role;
+                roleSpan.classList.add('role');
+                
+                // Add appropriate class based on role
+                if (user.role.toLowerCase() === 'admin') {
+                    roleSpan.classList.add('admin');
+                } else if (user.role.toLowerCase() === 'editor') {
+                    roleSpan.classList.add('editor');
+                } else if (user.role.toLowerCase() === 'viewer') {
+                    roleSpan.classList.add('viewer');
+                } else {
+                    roleSpan.classList.add('user');
+                }
+                
+                roleCell.appendChild(roleSpan);
+                
+                // Append cells to row
+                row.appendChild(nameCell);
+                row.appendChild(emailCell);
+                row.appendChild(roleCell);
+                
+                // Append row to table body
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Set up sorting functionality
+        function setupSorting() {
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-column');
+                    
+                    // If clicking the same column, toggle direction
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // If clicking a different column, set to ascending
+                        currentSort.column = column;
+                        currentSort.direction = 'asc';
+                    }
+                    
+                    // Update header classes
+                    updateHeaderClasses(column);
+                    
+                    // Sort and render the table
+                    const sortedData = sortUsers(users, column, currentSort.direction);
+                    renderTable(sortedData);
+                });
+            });
+        }
+
+        // Update header classes to show current sort state
+        function updateHeaderClasses(sortedColumn) {
+            sortableHeaders.forEach(header => {
+                header.classList.remove('sorted-asc', 'sorted-desc');
+                
+                if (header.getAttribute('data-column') === sortedColumn) {
+                    if (currentSort.direction === 'asc') {
+                        header.classList.add('sorted-asc');
+                    } else {
+                        header.classList.add('sorted-desc');
+                    }
+                }
+            });
+        }
+
+        // Sort users based on column and direction
+        function sortUsers(data, column, direction) {
+            return [...data].sort((a, b) => {
+                let aValue = a[column];
+                let bValue = b[column];
+                
+                // For case-insensitive string comparison
+                if (typeof aValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                if (aValue < bValue) {
+                    return direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+
+        // Initialize the table when the page loads
+        document.addEventListener('DOMContentLoaded', initTable);
+        
+        // Initial sort by name
+        updateHeaderClasses('name');
+    </script>
+</body>
+</html>

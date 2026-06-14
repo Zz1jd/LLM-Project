@@ -1,0 +1,63 @@
+{
+  "task": "task10_progress_bar",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 5,
+    "a11yErrors": 3,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This fileinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #fileInput",
+        "[Rule] This form field should be labelled in some way. Use the label element (either with a \"for\" attribute or wrapped around the form field), or \"title\", \"aria-label\" or \"aria-labelledby\" attributes as appropriate. | [Affected Elements] #fileInput",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change background to #0072ed. | [Affected Elements] #startUpload"
+      ],
+      "security": [
+        "[JS Line 24] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 3
+  }
+}

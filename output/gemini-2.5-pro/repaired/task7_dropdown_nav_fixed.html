@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Dropdown Menu</title>
+    <style>
+        /* Basic Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        /* Navigation Bar Container */
+        .navbar {
+            display: flex;
+            background-color: #2c3e50;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Top-level Menu Items */
+        .nav-item {
+            color: white;
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        
+        /* Style for button used as a nav-item */
+        button.nav-item {
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        /* Dropdown Container (a specific type of nav-item) */
+        .dropdown {
+            position: relative;
+        }
+
+        /* Dropdown Content (hidden by default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0 0 5px 5px;
+            overflow: hidden; /* Ensures border-radius is applied to children */
+        }
+        
+        /* Class to show the dropdown via JavaScript */
+        .dropdown-content.show {
+            display: block;
+        }
+
+        /* Items within the dropdown */
+        .dropdown-item {
+            color: black;
+            padding: 12px 16px;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        /* Hover effect for dropdown items */
+        .dropdown-item:hover {
+            background-color: #ecf0f1;
+        }
+
+        /* Hover effect for top-level items */
+        .nav-item:hover, button.nav-item:hover {
+            background-color: #34495e;
+        }
+        
+        /* Simple button for the JS function demo */
+        .action-button {
+            margin: 20px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #177bbe; /* A11y Fix: Improved contrast */
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .action-button:hover {
+            background-color: #125e9a; /* Adjusted hover color */
+        }
+        .action-button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="nav-item">Home</a>
+        <div class="dropdown">
+            <button id="products-menu" class="nav-item" aria-haspopup="true" aria-expanded="false" aria-controls="products-dropdown">
+                Products
+            </button>
+            <div class="dropdown-content" id="products-dropdown" role="menu" aria-labelledby="products-menu">
+                <a href="#" class="dropdown-item" role="menuitem">Laptops</a>
+                <a href="#" class="dropdown-item" role="menuitem">Phones</a>
+            </div>
+        </div>
+        <a href="#" class="nav-item">About</a>
+    </nav>
+
+    <button id="addItemButton" class="action-button">Add "New Item" to Products</button>
+
+    <script>
+        /**
+         * Adds a new item to the products dropdown menu.
+         * @param {string} itemName - The text content for the new menu item.
+         */
+        function addNewProductItem(itemName) {
+            // Find the dropdown content container by its ID
+            const dropdownContainer = document.getElementById('products-dropdown');
+
+            // Ensure the container exists before trying to add to it
+            if (dropdownContainer) {
+                // Security Fix: Create elements safely instead of using insertAdjacentHTML
+                const newItem = document.createElement('a');
+                newItem.href = '#';
+                newItem.className = 'dropdown-item';
+                newItem.setAttribute('role', 'menuitem');
+                newItem.textContent = itemName; // Use textContent to prevent DOM-XSS
+                
+                // Add the new item at the end of the container
+                dropdownContainer.appendChild(newItem);
+            } else {
+                console.error('Dropdown container with ID "products-dropdown" not found.');
+            }
+        }
+
+        // Add an event listener to the button
+        document.getElementById('addItemButton').addEventListener('click', function() {
+            // Call the function to add a new item
+            addNewProductItem('New Item');
+            
+            // Optional: Disable the button after it's clicked to prevent multiple additions
+            this.disabled = true;
+            this.textContent = 'Item Added!';
+        });
+
+        // A11y Fix: Dropdown functionality with click for better accessibility
+        const productsMenuButton = document.getElementById('products-menu');
+        const productsDropdown = document.getElementById('products-dropdown');
+
+        productsMenuButton.addEventListener('click', function(event) {
+            // Stop the click from propagating to the window listener
+            event.stopPropagation();
+            const isExpanded = productsMenuButton.getAttribute('aria-expanded') === 'true';
+            
+            // Toggle dropdown visibility and ARIA attribute
+            productsDropdown.classList.toggle('show');
+            productsMenuButton.setAttribute('aria-expanded', !isExpanded);
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        window.addEventListener('click', function() {
+            if (productsDropdown.classList.contains('show')) {
+                productsDropdown.classList.remove('show');
+                productsMenuButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Security Fix: Prevent default behavior for placeholder links to address "unsafe inline" reports
+        document.querySelectorAll('a[href="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(event) {
+                event.preventDefault();
+            });
+        });
+    </script>
+
+</body>
+</html>

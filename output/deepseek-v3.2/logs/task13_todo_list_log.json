@@ -1,0 +1,64 @@
+{
+  "task": "task13_todo_list",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 6,
+    "a11yErrors": 3,
+    "secErrors": 3,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This textinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #taskInput",
+        "[Rule] This form field should be labelled in some way. Use the label element (either with a \"for\" attribute or wrapped around the form field), or \"title\", \"aria-label\" or \"aria-labelledby\" attributes as appropriate. | [Affected Elements] #taskInput",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.54:1. Recommendation:  change text colour to #767676. | [Affected Elements] #taskList > div"
+      ],
+      "security": [
+        "[JS Line 36] Unsafe DOM manipulation: Unsafe call to taskList.insertAdjacentHTML for argument 1 (Variable 'taskClass' initialized with unsafe value at 34:38). Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 69] Unsafe DOM manipulation: Unsafe call to taskList.insertAdjacentHTML for argument 1. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 3
+  }
+}

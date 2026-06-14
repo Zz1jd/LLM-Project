@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for an interactive tooltip.
+It must include:
+1. A button that says "Hover for info".
+2. A tooltip that appears above the button when hovered.
+3. The tooltip should contain some text and a small "Learn more" link.
+4. JavaScript to position the tooltip and manage its visibility.

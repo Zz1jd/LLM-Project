@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabs Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .tabs-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: background 0.3s;
+        }
+
+        .tab:hover {
+            background: #eaeaea;
+        }
+
+        .tab.active {
+            background: #fff;
+            font-weight: bold;
+            border-bottom: 2px solid #007BFF;
+        }
+
+        .tab-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs-container" role="tablist" aria-label="Tabs Navigation">
+        <div class="tabs">
+            <button class="tab active" data-tab="profile" role="tab" aria-selected="true" aria-controls="profile-content">Profile</button>
+            <button class="tab" data-tab="settings" role="tab" aria-selected="false" aria-controls="settings-content">Settings</button>
+            <button class="tab" data-tab="messages" role="tab" aria-selected="false" aria-controls="messages-content">Messages</button>
+        </div>
+        <div class="tab-content" id="tab-content" role="tabpanel" aria-live="polite">
+            <span id="profile-content">Welcome to the Profile tab.</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContent = document.getElementById('tab-content');
+
+            const contentMap = {
+                profile: 'Welcome to the Profile tab.',
+                settings: 'Here you can adjust your Settings.',
+                messages: 'Check your Messages here.'
+            };
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class and update ARIA attributes for all tabs
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+
+                    // Add active class and update ARIA attributes for the clicked tab
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+
+                    // Update the content area safely
+                    const tabKey = tab.getAttribute('data-tab');
+                    const newContent = document.createElement('span');
+                    newContent.id = `${tabKey}-content`;
+                    newContent.textContent = contentMap[tabKey];
+                    while (tabContent.firstChild) {
+                        tabContent.removeChild(tabContent.firstChild);
+                    }
+                    tabContent.appendChild(newContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

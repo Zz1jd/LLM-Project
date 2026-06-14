@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        #search-input:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+        
+        #suggestions-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            margin-top: 5px;
+        }
+        
+        .suggestion-item {
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f5f7ff;
+        }
+        
+        .highlight {
+            color: #4a6cf7;
+            font-weight: 600;
+        }
+        
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search with Autocomplete</h1>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Type to search...">
+            <div id="suggestions-container"></div>
+        </div>
+        
+        <div class="instructions">
+            <p>Start typing to see autocomplete suggestions. Suggestions are generated based on your input.</p>
+        </div>
+    </div>
+
+    <script>
+        // Fake data for autocomplete suggestions
+        const fakeData = [
+            "JavaScript Tutorial",
+            "HTML5 Basics",
+            "CSS3 Styling",
+            "React Framework",
+            "Vue.js Introduction",
+            "Angular Development",
+            "Node.js Backend",
+            "Python Programming",
+            "Java Development",
+            "C# .NET Core",
+            "Web Design Principles",
+            "Responsive Layout",
+            "Mobile First Design",
+            "API Integration",
+            "Database Management",
+            "Cloud Computing",
+            "Machine Learning",
+            "Data Science",
+            "Artificial Intelligence",
+            "Cybersecurity Basics",
+            "Git Version Control",
+            "DevOps Practices",
+            "UI/UX Design",
+            "Frontend Development",
+            "Backend Development",
+            "Full Stack Course",
+            "Software Engineering",
+            "Agile Methodology",
+            "Project Management",
+            "Technical Interview"
+        ];
+        
+        const searchInput = document.getElementById('search-input');
+        const suggestionsContainer = document.getElementById('suggestions-container');
+        
+        // Function to generate fake suggestions based on input
+        function generateSuggestions(searchTerm) {
+            if (!searchTerm.trim()) {
+                return [];
+            }
+            
+            const term = searchTerm.toLowerCase();
+            return fakeData.filter(item => 
+                item.toLowerCase().includes(term)
+            ).slice(0, 8); // Limit to 8 suggestions
+        }
+        
+        // Function to highlight matching text in suggestions
+        function highlightMatch(text, searchTerm) {
+            if (!searchTerm.trim()) return text;
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Function to display suggestions
+        function showSuggestions(suggestions, searchTerm) {
+            if (suggestions.length === 0) {
+                suggestionsContainer.innerHTML = '<div class="no-results">No matching results found</div>';
+                suggestionsContainer.style.display = 'block';
+                return;
+            }
+            
+            let suggestionsHTML = '';
+            
+            suggestions.forEach(suggestion => {
+                suggestionsHTML += `
+                    <div class="suggestion-item">
+                        ${highlightMatch(suggestion, searchTerm)}
+                    </div>
+                `;
+            });
+            
+            suggestionsContainer.innerHTML = suggestionsHTML;
+            suggestionsContainer.style.display = 'block';
+            
+            // Add click event to each suggestion
+            const suggestionItems = suggestionsContainer.querySelectorAll('.suggestion-item');
+            suggestionItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    searchInput.value = suggestions[index];
+                    suggestionsContainer.style.display = 'none';
+                });
+            });
+        }
+        
+        // Event listener for input
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value;
+            
+            if (searchTerm.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+            
+            const suggestions = generateSuggestions(searchTerm);
+            showSuggestions(suggestions, searchTerm);
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+        
+        // Keyboard navigation for suggestions
+        searchInput.addEventListener('keydown', function(event) {
+            const visibleSuggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+            
+            if (visibleSuggestions.length === 0) return;
+            
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (visibleSuggestions.length > 0) {
+                    visibleSuggestions[0].focus();
+                }
+            }
+        });
+        
+        // Add focus event to show suggestions when input is focused with text
+        searchInput.addEventListener('focus', function() {
+            if (this.value.length > 0) {
+                const suggestions = generateSuggestions(this.value);
+                showSuggestions(suggestions, this.value);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "task": "task5_modal",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 3,
+    "a11yErrors": 1,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This emailinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #emailInput"
+      ],
+      "security": [
+        "[JS Line 38] Unsafe DOM manipulation: Unsafe assignment to innerHTML (Variable 'email' initialized with unsafe value at 22:30). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 4
+  }
+}

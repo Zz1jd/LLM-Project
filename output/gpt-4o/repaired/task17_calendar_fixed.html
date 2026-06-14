@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .day, .date {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .day {
+            font-weight: bold;
+            background-color: #f4f4f4;
+        }
+        .date {
+            cursor: pointer;
+            background-color: #fff;
+        }
+        .date:hover {
+            background-color: #e0e0e0;
+        }
+        .date.selected {
+            background-color: #007BFF;
+            color: #fff;
+        }
+        #selected-date {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monthly Calendar</h1>
+    <div class="calendar" id="calendar" role="grid" aria-label="Monthly Calendar">
+        <div class="day" role="columnheader" aria-label="Sunday">Sun</div>
+        <div class="day" role="columnheader" aria-label="Monday">Mon</div>
+        <div class="day" role="columnheader" aria-label="Tuesday">Tue</div>
+        <div class="day" role="columnheader" aria-label="Wednesday">Wed</div>
+        <div class="day" role="columnheader" aria-label="Thursday">Thu</div>
+        <div class="day" role="columnheader" aria-label="Friday">Fri</div>
+        <div class="day" role="columnheader" aria-label="Saturday">Sat</div>
+    </div>
+    <div id="selected-date" aria-live="polite">Selected: None</div>
+    <script>
+        const calendar = document.getElementById('calendar');
+        const selectedDateDisplay = document.getElementById('selected-date');
+
+        function generateCalendar() {
+            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+            const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay();
+
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('date');
+                emptyCell.setAttribute('aria-hidden', 'true');
+                calendar.appendChild(emptyCell);
+            }
+
+            // Add cells for each date
+            for (let date = 1; date <= daysInMonth; date++) {
+                const dateCell = document.createElement('div');
+                dateCell.classList.add('date');
+                dateCell.textContent = date;
+                dateCell.setAttribute('role', 'button');
+                dateCell.setAttribute('aria-label', `Select date ${date}`);
+                dateCell.addEventListener('click', () => selectDate(dateCell, date));
+                calendar.appendChild(dateCell);
+            }
+        }
+
+        function selectDate(cell, date) {
+            // Remove 'selected' class from all date cells
+            document.querySelectorAll('.date').forEach(dateCell => dateCell.classList.remove('selected'));
+            // Add 'selected' class to the clicked cell
+            cell.classList.add('selected');
+            // Update the selected date display
+            selectedDateDisplay.textContent = `Selected: ${date}`;
+        }
+
+        generateCalendar();
+    </script>
+</body>
+</html>

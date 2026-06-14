@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Table</title>
+    <style>
+        :root {
+            --primary-bg: #fafbfc;
+            --table-border-color: #dee2e6;
+            --header-bg: #e9ecef;
+            --row-hover-bg: #f1f3f5;
+            --text-color: #212529;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-container {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        caption {
+            caption-side: bottom;
+            padding-top: 1rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--table-border-color);
+        }
+
+        thead th {
+            background-color: var(--header-bg);
+            font-weight: 600;
+            position: relative;
+            padding: 0; /* Remove padding from th to allow button to fill it */
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        tbody tr:hover {
+            background-color: var(--row-hover-bg);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .sortable-header {
+            /* Reset button styles */
+            background: transparent;
+            border: none;
+            font: inherit;
+            color: inherit;
+            text-align: left;
+            
+            /* Layout */
+            width: 100%;
+            padding: 12px 15px; /* Apply padding to the button */
+            
+            /* Interactive styles */
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sortable-header:hover, .sortable-header:focus-visible {
+            background-color: #dbe1e6;
+            outline: 2px solid #0d6efd;
+            outline-offset: -2px;
+        }
+
+        .sortable-header::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            margin-left: 8px;
+            opacity: 0.3;
+            transition: opacity 0.2s, transform 0.2s;
+            vertical-align: middle;
+        }
+
+        .sortable-header.sort-asc::after {
+            border-bottom: 5px solid var(--text-color);
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .sortable-header.sort-desc::after {
+            border-top: 5px solid var(--text-color);
+            opacity: 1;
+            transform: translateY(3px);
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>User Data Table</h1>
+        <div id="sort-announcement" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+        <div class="table-container">
+            <table>
+                <caption>A sortable table of user data including name, email, and role.</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <button class="sortable-header" data-column="name" aria-sort="none">Name</button>
+                        </th>
+                        <th scope="col">
+                            <button class="sortable-header" data-column="email" aria-sort="none">Email</button>
+                        </th>
+                        <th scope="col">
+                            <button class="sortable-header" data-column="role" aria-sort="none">Role</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body">
+                    <!-- Rows will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. DATA
+            const users = [
+                { name: 'Zara Ali', email: 'zara.ali@example.com', role: 'Developer' },
+                { name: 'John Doe', email: 'john.doe@example.com', role: 'Admin' },
+                { name: 'Jane Smith', email: 'jane.smith@example.com', role: 'Designer' },
+                { name: 'Peter Jones', email: 'peter.jones@example.com', role: 'Project Manager' },
+                { name: 'Mary Johnson', email: 'mary.j@example.com', role: 'Developer' },
+                { name: 'Chris Lee', email: 'chris.lee@example.com', role: 'User' },
+                { name: 'Alice Williams', email: 'alice.w@example.com', role: 'Designer' },
+            ];
+
+            // 2. STATE
+            let currentSort = {
+                column: null,
+                direction: 'asc' // 'asc' or 'desc'
+            };
+
+            // 3. REFERENCES to DOM elements
+            const tableBody = document.getElementById('user-table-body');
+            const headers = document.querySelectorAll('.sortable-header');
+            const sortAnnouncement = document.getElementById('sort-announcement');
+
+            // 4. FUNCTIONS
+            
+            /**
+             * Renders the table rows based on the provided data array.
+             * This function is safe from XSS because it uses textContent to insert data.
+             * @param {Array<Object>} data - The array of user objects to render.
+             */
+            function renderTable(data) {
+                // Clear existing table body safely
+                tableBody.textContent = '';
+
+                // Create and append a row for each user
+                data.forEach(user => {
+                    const row = document.createElement('tr');
+                    
+                    // Using textContent to prevent DOM-XSS
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = user.name;
+                    row.appendChild(nameCell);
+
+                    const emailCell = document.createElement('td');
+                    emailCell.textContent = user.email;
+                    row.appendChild(emailCell);
+
+                    const roleCell = document.createElement('td');
+                    roleCell.textContent = user.role;
+                    row.appendChild(roleCell);
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+            /**
+             * Sorts the user data and re-renders the table.
+             * @param {string} column - The key to sort the user objects by.
+             */
+            function sortAndRender(column) {
+                // Determine sort direction
+                if (currentSort.column === column) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.column = column;
+                    currentSort.direction = 'asc';
+                }
+
+                // Sort the data
+                users.sort((a, b) => {
+                    const valA = a[column].toLowerCase();
+                    const valB = b[column].toLowerCase();
+                    
+                    let comparison = 0;
+                    if (valA > valB) {
+                        comparison = 1;
+                    } else if (valA < valB) {
+                        comparison = -1;
+                    }
+                    
+                    return currentSort.direction === 'desc' ? comparison * -1 : comparison;
+                });
+
+                // Update header styles and ARIA attributes
+                updateHeaderStyles();
+                
+                // Re-render the table with sorted data
+                renderTable(users);
+
+                // Announce the sort action to screen readers
+                const directionText = currentSort.direction === 'asc' ? 'ascending' : 'descending';
+                sortAnnouncement.textContent = `Table sorted by ${column}, ${directionText}.`;
+            }
+
+            /**
+             * Updates the CSS classes and ARIA attributes on headers to show the sort indicator.
+             */
+            function updateHeaderStyles() {
+                headers.forEach(header => {
+                    const column = header.getAttribute('data-column');
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (column === currentSort.column) {
+                        const directionClass = currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc';
+                        const ariaDirection = currentSort.direction === 'asc' ? 'ascending' : 'descending';
+                        header.classList.add(directionClass);
+                        header.setAttribute('aria-sort', ariaDirection);
+                    } else {
+                        header.setAttribute('aria-sort', 'none');
+                    }
+                });
+            }
+
+            // 5. EVENT LISTENERS
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-column');
+                    sortAndRender(column);
+                });
+                // No keydown listener needed for space/enter; <button> handles it natively.
+            });
+
+            // 6. INITIAL RENDER
+            renderTable(users);
+        });
+    </script>
+
+</body>
+</html>

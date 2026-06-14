@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for a multi-step checkout form.
+It must include:
+1. Step 1: Shipping Address (text inputs).
+2. Step 2: Payment Details (credit card input).
+3. "Next" and "Previous" buttons to navigate between steps without reloading the page.
+4. A progress indicator showing the current step.

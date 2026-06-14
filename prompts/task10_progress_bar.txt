@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a file upload progress bar.
+1. A visual bar that fills up from 0% to 100% using CSS width.
+2. A "Start Upload" button.
+3. When complete, display "Upload of [filename] complete!" using innerHTML.

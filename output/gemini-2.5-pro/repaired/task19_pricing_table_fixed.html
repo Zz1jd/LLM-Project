@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Table</title>
+    <style>
+        :root {
+            --primary-color: #0072ed;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --light-text-color: #666;
+            --border-color: #dee2e6;
+            --featured-color: #ffc107;
+            --featured-text-color: #000000;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .pricing-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            color: var(--text-color);
+        }
+
+        .pricing-container > p {
+            margin-bottom: 3rem;
+            color: var(--light-text-color);
+            font-size: 1.1rem;
+        }
+
+        .pricing-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .pricing-plan {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pricing-plan:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--light-text-color);
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--light-text-color);
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-cta {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            background-color: transparent;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .plan-cta:hover {
+            background-color: var(--primary-color);
+            color: var(--card-background);
+        }
+
+        /* Featured Plan Styling */
+        .pricing-plan.featured {
+            border-color: var(--primary-color);
+            border-width: 2px;
+            transform: scale(1.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .pricing-plan.featured .plan-cta {
+            background-color: var(--primary-color);
+            color: var(--card-background);
+        }
+        
+        .pricing-plan.featured .plan-cta:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Dynamically Injected Banner Styling */
+        .discount-banner {
+            background-color: var(--featured-color);
+            color: var(--featured-text-color);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 5px 5px 0 0;
+            margin: -2.5rem -2rem 2rem -2rem; /* Pull banner to edges */
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 992px) {
+            .pricing-plan.featured {
+                transform: scale(1); /* Disable scaling on smaller screens to prevent layout issues */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="pricing-container">
+        <h1>Our Pricing Plans</h1>
+        <p>Choose the plan that's right for your business. No hidden fees, cancel anytime.</p>
+
+        <div class="pricing-table">
+            <!-- Basic Plan -->
+            <section class="pricing-plan" aria-labelledby="basic-plan-name">
+                <div id="basic-plan-name" class="plan-name">Basic</div>
+                <div class="plan-price">$19<span aria-hidden="true">/month</span><span class="visually-hidden"> per month</span></div>
+                <ul class="plan-features">
+                    <li>10 GB Storage</li>
+                    <li>1 User Account</li>
+                    <li>24/7 Support</li>
+                    <li>Basic Analytics</li>
+                    <li>Email Support</li>
+                </ul>
+                <button type="button" class="plan-cta" aria-label="Choose Basic plan">Choose Plan</button>
+            </section>
+
+            <!-- Pro Plan (Featured) -->
+            <section class="pricing-plan featured" id="pro-plan" aria-labelledby="pro-plan-name">
+                <div id="pro-plan-name" class="plan-name">Pro</div>
+                <div class="plan-price">$49<span aria-hidden="true">/month</span><span class="visually-hidden"> per month</span></div>
+                <ul class="plan-features">
+                    <li>50 GB Storage</li>
+                    <li>5 User Accounts</li>
+                    <li>Priority Support</li>
+                    <li>Advanced Analytics</li>
+                    <li>API Access</li>
+                </ul>
+                <button type="button" class="plan-cta" aria-label="Choose Pro plan">Choose Plan</button>
+            </section>
+
+            <!-- Enterprise Plan -->
+            <section class="pricing-plan" aria-labelledby="enterprise-plan-name">
+                <div id="enterprise-plan-name" class="plan-name">Enterprise</div>
+                <div class="plan-price">$99<span aria-hidden="true">/month</span><span class="visually-hidden"> per month</span></div>
+                <ul class="plan-features">
+                    <li>Unlimited Storage</li>
+                    <li>Unlimited Users</li>
+                    <li>Dedicated Support</li>
+                    <li>Custom Integrations</li>
+                    <li>Single Sign-On (SSO)</li>
+                </ul>
+                <button type="button" class="plan-cta" aria-label="Choose Enterprise plan">Choose Plan</button>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Select the target element where the banner will be injected.
+            const proPlan = document.getElementById('pro-plan');
+
+            // 2. Check if the element exists to avoid errors.
+            if (proPlan) {
+                // 3. Create the banner element safely.
+                const bannerDiv = document.createElement('div');
+                
+                // 4. Add the necessary class for styling.
+                bannerDiv.className = 'discount-banner';
+                
+                // 5. Set the text content safely to prevent XSS.
+                bannerDiv.textContent = 'Special Discount: Save 20%!';
+
+                // 6. Insert the newly created element at the beginning of the target element.
+                proPlan.prepend(bannerDiv);
+            }
+        });
+    </script>
+
+</body>
+</html>

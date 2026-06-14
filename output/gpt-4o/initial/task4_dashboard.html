@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dashboard Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dashboard-widget {
+            width: 400px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+        .data-table td.status {
+            color: #888;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-widget">
+        <div class="dashboard-header" id="user-name">Welcome, User</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-01</td>
+                    <td>$120.00</td>
+                    <td class="status">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-02</td>
+                    <td>$75.50</td>
+                    <td class="status">Pending</td>
+                </tr>
+                <tr>
+                    <td>2023-10-03</td>
+                    <td>$200.00</td>
+                    <td class="status">Failed</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function loadUserName(name) {
+            document.getElementById('user-name').innerHTML = `Welcome, ${name}`;
+        }
+
+        // Example usage: dynamically load the user's name
+        loadUserName('John Doe');
+    </script>
+</body>
+</html>

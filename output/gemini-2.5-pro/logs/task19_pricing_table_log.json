@@ -1,0 +1,62 @@
+{
+  "task": "task19_pricing_table",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 5,
+    "a11yErrors": 3,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change text colour to #0072ed. | [Affected Elements] html > body > div > div > div:nth-child(1) > a, html > body > div > div > div:nth-child(3) > a",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change background to #0072ed. | [Affected Elements] #pro-plan > a"
+      ],
+      "security": [
+        "[JS Line 13] Unsafe DOM manipulation: Unsafe call to proPlan.insertAdjacentHTML for argument 1. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 2
+  }
+}

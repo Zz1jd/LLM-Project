@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Subscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .close-btn::before,
+        .close-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 2px;
+            background-color: #888;
+            border-radius: 1px;
+        }
+
+        .close-btn::before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .close-btn::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .close-btn:hover::before,
+        .close-btn:hover::after {
+            background-color: #333;
+        }
+
+        h2 {
+            color: #1a1a1a;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e5eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .email-input:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+        }
+
+        .email-input::placeholder {
+            color: #aaa;
+        }
+
+        .subscribe-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4a6cf7 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(74, 108, 247, 0.2);
+        }
+
+        .subscribe-btn:active {
+            transform: translateY(0);
+        }
+
+        .confirmation {
+            margin-top: 25px;
+            padding: 18px;
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            border-left: 4px solid #4a6cf7;
+            color: #1a1a1a;
+            font-size: 16px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .confirmation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .confirmation strong {
+            color: #4a6cf7;
+        }
+
+        .trigger-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #4a6cf7 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+        }
+
+        .trigger-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(74, 108, 247, 0.4);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .modal {
+                padding: 30px 25px;
+                border-radius: 16px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="trigger-btn" id="triggerBtn">Subscribe to Newsletter</button>
+
+    <div class="overlay" id="overlay">
+        <div class="modal">
+            <button class="close-btn" id="closeBtn" aria-label="Close"></button>
+            
+            <h2>Stay Updated</h2>
+            <p class="subtitle">Subscribe to our newsletter for the latest news, updates, and exclusive content delivered directly to your inbox.</p>
+            
+            <div class="form-group">
+                <label for="emailInput" class="sr-only">Email address</label>
+                <input type="email" class="email-input" id="emailInput" placeholder="Enter your email address" required aria-label="Email address">
+            </div>
+            
+            <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
+            
+            <div class="confirmation" id="confirmation"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('overlay');
+            const closeBtn = document.getElementById('closeBtn');
+            const subscribeBtn = document.getElementById('subscribeBtn');
+            const emailInput = document.getElementById('emailInput');
+            const confirmation = document.getElementById('confirmation');
+            const triggerBtn = document.getElementById('triggerBtn');
+            
+            function openModal() {
+                overlay.classList.add('active');
+                emailInput.focus();
+            }
+            
+            function closeModal() {
+                overlay.classList.remove('active');
+                confirmation.classList.remove('show');
+                confirmation.textContent = '';
+                emailInput.value = '';
+            }
+            
+            function subscribe() {
+                const email = emailInput.value.trim();
+                
+                if (!email) {
+                    emailInput.style.borderColor = '#ff4757';
+                    setTimeout(() => {
+                        emailInput.style.borderColor = '#e1e5eb';
+                    }, 2000);
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    confirmation.textContent = 'Please enter a valid email address.';
+                    confirmation.classList.add('show');
+                    return;
+                }
+                
+                const strong = document.createElement('strong');
+                strong.textContent = email;
+                
+                confirmation.textContent = '';
+                confirmation.appendChild(document.createTextNode('Thank you, '));
+                confirmation.appendChild(strong);
+                confirmation.appendChild(document.createTextNode('! Your subscription has been confirmed.'));
+                confirmation.classList.add('show');
+                
+                emailInput.value = '';
+                
+                setTimeout(() => {
+                    closeModal();
+                }, 3000);
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            triggerBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            subscribeBtn.addEventListener('click', subscribe);
+            
+            emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    subscribe();
+                }
+            });
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

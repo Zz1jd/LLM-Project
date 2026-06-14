@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .faq-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 15px 20px;
+            cursor: pointer;
+            background: #f7f7f7;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #eaeaea;
+        }
+
+        .faq-question:focus {
+            outline: 2px solid #005fcc;
+            outline-offset: 2px;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            background: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-answer.open {
+            padding: 15px 20px;
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container" role="region" aria-labelledby="faq-heading">
+        <h1 id="faq-heading">Frequently Asked Questions</h1>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer1">What is your return policy?</button>
+            <div id="answer1" class="faq-answer" role="region" aria-hidden="true">Our return policy allows returns within 30 days of purchase. Items must be in original condition.</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer2">How long does shipping take?</button>
+            <div id="answer2" class="faq-answer" role="region" aria-hidden="true">Shipping typically takes 5-7 business days, depending on your location.</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer3">Do you offer international shipping?</button>
+            <div id="answer3" class="faq-answer" role="region" aria-hidden="true">Yes, we offer international shipping to select countries. Additional fees may apply.</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+
+                question.addEventListener('click', () => {
+                    const isOpen = question.getAttribute('aria-expanded') === 'true';
+
+                    faqItems.forEach(otherItem => {
+                        const otherQuestion = otherItem.querySelector('.faq-question');
+                        const otherAnswer = otherItem.querySelector('.faq-answer');
+                        otherQuestion.setAttribute('aria-expanded', 'false');
+                        otherAnswer.classList.remove('open');
+                        otherAnswer.setAttribute('aria-hidden', 'true');
+                    });
+
+                    if (!isOpen) {
+                        question.setAttribute('aria-expanded', 'true');
+                        answer.classList.add('open');
+                        answer.setAttribute('aria-hidden', 'false');
+                    } else {
+                        question.setAttribute('aria-expanded', 'false');
+                        answer.classList.remove('open');
+                        answer.setAttribute('aria-hidden', 'true');
+                    }
+                });
+
+                question.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        question.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

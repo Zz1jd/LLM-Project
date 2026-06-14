@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Notification</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .controls {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .controls h1 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .controls p {
+            color: #6c797a;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #177bbe;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: #1267a1;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Toast Container */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        /* Individual Toast Styling */
+        .toast {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 16px 24px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Start hidden for animation */
+            transform: translateX(100%); /* Start off-screen */
+            animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            min-width: 250px;
+            max-width: 350px;
+            pointer-events: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toast-message {
+            flex-grow: 1;
+        }
+
+        .toast-close-btn {
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+            margin: 0;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close-btn:hover {
+            opacity: 1;
+            background-color: transparent;
+        }
+
+        /* Animation for hiding the toast */
+        .toast.hide {
+            animation: slideOut 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+        /* Keyframe Animations */
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This container will hold all the toast notifications -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- Demo controls -->
+    <main class="controls">
+        <h1>Toast Notification</h1>
+        <p>Click a button to trigger a notification.</p>
+        <button id="show-standard-toast">Show Standard Toast</button>
+        <button id="show-html-toast">Show HTML Toast</button>
+    </main>
+
+    <script>
+        /**
+         * Recursively sanitizes a DOM node to prevent XSS.
+         * - Removes <script> tags.
+         * - Removes `on*` event handler attributes.
+         * This is a post-order traversal.
+         * @param {Node} node - The DOM node to sanitize.
+         */
+        function sanitizeNode(node) {
+            // Recurse on child nodes first
+            const children = Array.from(node.childNodes);
+            for (const child of children) {
+                sanitizeNode(child);
+            }
+
+            // Sanitize the node itself after its children are sanitized
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                // Rule 1: Disallow <script> tags
+                if (node.tagName === 'SCRIPT') {
+                    node.remove();
+                    return;
+                }
+
+                // Rule 2: Disallow on* event handlers
+                for (let i = node.attributes.length - 1; i >= 0; i--) {
+                    const attrName = node.attributes[i].name;
+                    if (attrName.toLowerCase().startsWith('on')) {
+                        node.removeAttribute(attrName);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Shows a toast notification.
+         * @param {Node} contentNode - The DOM Node (e.g., TextNode, DocumentFragment) to display.
+         */
+        function showToast(contentNode) {
+            const container = document.getElementById('toast-container');
+
+            // Security: Clone the node and sanitize it before appending to the DOM
+            const safeContent = contentNode.cloneNode(true);
+            sanitizeNode(safeContent);
+
+            // Create the toast element
+            const toast = document.createElement('div');
+            toast.classList.add('toast');
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-atomic', 'true');
+
+            // Create a container for the message content
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('toast-message');
+            messageContainer.appendChild(safeContent);
+
+            // Create a close button for accessibility
+            const closeButton = document.createElement('button');
+            closeButton.setAttribute('type', 'button');
+            closeButton.setAttribute('aria-label', 'Close notification');
+            closeButton.classList.add('toast-close-btn');
+            closeButton.textContent = '\u00D7'; // Unicode for '×' (multiplication sign)
+
+            let removalTimeout;
+
+            // Function to remove the toast with animation
+            const removeToast = () => {
+                toast.classList.add('hide');
+                toast.addEventListener('animationend', () => {
+                    toast.remove();
+                }, { once: true }); // Ensure the event listener is removed after firing
+            };
+
+            // A11y: Functions to pause and resume the timeout for user control
+            const startTimeout = () => {
+                removalTimeout = setTimeout(removeToast, 5000); // 5000 milliseconds = 5 seconds
+            };
+
+            const pauseTimeout = () => {
+                clearTimeout(removalTimeout);
+            };
+
+            // Add click listener to the close button
+            closeButton.addEventListener('click', () => {
+                pauseTimeout();
+                removeToast();
+            });
+
+            // A11y: Pause timeout on hover/focus to give users more time to interact
+            toast.addEventListener('mouseenter', pauseTimeout);
+            toast.addEventListener('mouseleave', startTimeout);
+            toast.addEventListener('focusin', pauseTimeout);
+            toast.addEventListener('focusout', startTimeout);
+
+            // Assemble the toast
+            toast.appendChild(messageContainer);
+            toast.appendChild(closeButton);
+
+            // Append the toast to the container
+            container.appendChild(toast);
+
+            // Start the auto-removal timer
+            startTimeout();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const standardBtn = document.getElementById('show-standard-toast');
+            const htmlBtn = document.getElementById('show-html-toast');
+
+            standardBtn.addEventListener('click', () => {
+                const messageNode = document.createTextNode('This is a standard notification.');
+                showToast(messageNode);
+            });
+
+            htmlBtn.addEventListener('click', () => {
+                const fragment = document.createDocumentFragment();
+                const strongEl = document.createElement('strong');
+                strongEl.textContent = 'Success!';
+                fragment.appendChild(strongEl);
+                fragment.appendChild(document.createTextNode(' Your data was saved correctly.'));
+                showToast(fragment);
+            });
+        });
+    </script>
+
+</body>
+</html>

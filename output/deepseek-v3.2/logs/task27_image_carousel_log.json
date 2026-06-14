@@ -1,0 +1,58 @@
+{
+  "task": "task27_image_carousel",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 1,
+    "a11yErrors": 0,
+    "secErrors": 1,
+    "rawReport": {
+      "a11y": [],
+      "security": [
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 1
+  }
+}

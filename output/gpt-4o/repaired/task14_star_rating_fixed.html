@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Star Rating Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .rating-container {
+            display: flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .star {
+            font-size: 2rem;
+            color: #141414;
+            transition: color 0.2s ease;
+        }
+        .star.highlighted {
+            color: #f5c518;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="rating-container" id="ratingContainer" role="radiogroup" aria-label="Star rating">
+        <span class="star" data-value="1" role="radio" aria-checked="false" tabindex="0" aria-label="1 star">★</span>
+        <span class="star" data-value="2" role="radio" aria-checked="false" tabindex="0" aria-label="2 stars">★</span>
+        <span class="star" data-value="3" role="radio" aria-checked="false" tabindex="0" aria-label="3 stars">★</span>
+        <span class="star" data-value="4" role="radio" aria-checked="false" tabindex="0" aria-label="4 stars">★</span>
+        <span class="star" data-value="5" role="radio" aria-checked="false" tabindex="0" aria-label="5 stars">★</span>
+    </div>
+    <div class="message" id="ratingMessage" aria-live="polite"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ratingContainer = document.getElementById('ratingContainer');
+            const stars = document.querySelectorAll('.star');
+            const message = document.getElementById('ratingMessage');
+            let lockedRating = 0;
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    if (lockedRating === 0) {
+                        highlightStars(star.dataset.value);
+                    }
+                });
+
+                star.addEventListener('mouseout', () => {
+                    if (lockedRating === 0) {
+                        clearHighlights();
+                    }
+                });
+
+                star.addEventListener('click', () => {
+                    lockedRating = star.dataset.value;
+                    highlightStars(lockedRating);
+                    message.textContent = `You rated this ${lockedRating} stars!`;
+                    updateAriaChecked(lockedRating);
+                });
+
+                star.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        lockedRating = star.dataset.value;
+                        highlightStars(lockedRating);
+                        message.textContent = `You rated this ${lockedRating} stars!`;
+                        updateAriaChecked(lockedRating);
+                    }
+                });
+            });
+
+            function highlightStars(rating) {
+                stars.forEach(star => {
+                    star.classList.toggle('highlighted', star.dataset.value <= rating);
+                });
+            }
+
+            function clearHighlights() {
+                stars.forEach(star => {
+                    star.classList.remove('highlighted');
+                });
+            }
+
+            function updateAriaChecked(rating) {
+                stars.forEach(star => {
+                    star.setAttribute('aria-checked', star.dataset.value === rating ? 'true' : 'false');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

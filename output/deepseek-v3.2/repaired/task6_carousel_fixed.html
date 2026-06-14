@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+        }
+        
+        .carousel-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .image-container {
+            position: relative;
+            height: 500px;
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .carousel-image {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            user-select: none;
+        }
+        
+        .btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        .btn-prev {
+            left: 20px;
+        }
+        
+        .btn-next {
+            right: 20px;
+        }
+        
+        .caption-container {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 15px 15px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .caption {
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.5;
+            transition: opacity 0.3s ease;
+            padding: 10px;
+        }
+        
+        .indicators {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+        
+        .indicator.active {
+            background-color: #4cc9f0;
+            transform: scale(1.2);
+        }
+        
+        .image-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            .image-container {
+                height: 400px;
+            }
+            
+            .btn {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            
+            .caption {
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .image-container {
+                height: 300px;
+            }
+            
+            .carousel-container {
+                padding: 20px;
+            }
+            
+            .btn {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            .caption {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <h1>Nature Gallery Carousel</h1>
+        
+        <div class="carousel" role="region" aria-label="Image carousel">
+            <div class="image-counter" aria-live="polite" aria-atomic="true">
+                <span id="current-index">1</span> / <span id="total-images">5</span>
+            </div>
+            
+            <div class="image-container" id="image-container" aria-live="polite">
+                <!-- Images will be inserted here by JavaScript -->
+            </div>
+            
+            <button class="btn btn-prev" id="prev-btn" aria-label="Previous image">←</button>
+            <button class="btn btn-next" id="next-btn" aria-label="Next image">→</button>
+            
+            <div class="caption-container">
+                <div class="caption" id="caption" aria-live="polite">
+                    <!-- Caption will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="indicators" id="indicators" role="tablist" aria-label="Image navigation">
+            <!-- Indicators will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image data with URLs and captions
+            const imageData = [
+                {
+                    url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+                    caption: 'Majestic mountain landscape with a serene lake reflecting the snow-capped peaks at sunrise.'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+                    caption: 'Lush green forest with sun rays filtering through the dense canopy of trees.'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+                    caption: 'Aerial view of a winding river cutting through vibrant autumn-colored forests.'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+                    caption: 'Stunning waterfall cascading down rocky cliffs surrounded by lush vegetation.'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+                    caption: 'Golden hour at the beach with gentle waves washing over the sandy shore.'
+                }
+            ];
+            
+            // DOM elements
+            const imageContainer = document.getElementById('image-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const captionElement = document.getElementById('caption');
+            const indicatorsContainer = document.getElementById('indicators');
+            const currentIndexElement = document.getElementById('current-index');
+            const totalImagesElement = document.getElementById('total-images');
+            
+            // State variables
+            let currentIndex = 0;
+            const totalImages = imageData.length;
+            
+            // Initialize the carousel
+            function initCarousel() {
+                // Set total images count
+                totalImagesElement.textContent = totalImages;
+                
+                // Create image elements
+                imageData.forEach((image, index) => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = image.url;
+                    imgElement.alt = `Carousel image ${index + 1}: ${image.caption}`;
+                    imgElement.classList.add('carousel-image');
+                    imgElement.setAttribute('aria-hidden', index !== 0 ? 'true' : 'false');
+                    imageContainer.appendChild(imgElement);
+                    
+                    // Create indicator dots
+                    const indicator = document.createElement('button');
+                    indicator.classList.add('indicator');
+                    indicator.setAttribute('role', 'tab');
+                    indicator.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+                    indicator.setAttribute('aria-label', `Go to image ${index + 1}`);
+                    indicator.setAttribute('tabindex', index === 0 ? '0' : '-1');
+                    if (index === 0) indicator.classList.add('active');
+                    
+                    // Use event listener instead of inline onclick
+                    indicator.addEventListener('click', function() {
+                        goToImage(index);
+                    });
+                    
+                    indicatorsContainer.appendChild(indicator);
+                });
+                
+                // Set initial caption
+                updateCaption();
+                
+                // Position images correctly
+                updateImagePosition();
+            }
+            
+            // Update the caption based on current image
+            function updateCaption() {
+                captionElement.textContent = imageData[currentIndex].caption;
+                currentIndexElement.textContent = currentIndex + 1;
+                
+                // Update active indicator
+                document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.add('active');
+                        indicator.setAttribute('aria-selected', 'true');
+                        indicator.setAttribute('tabindex', '0');
+                    } else {
+                        indicator.classList.remove('active');
+                        indicator.setAttribute('aria-selected', 'false');
+                        indicator.setAttribute('tabindex', '-1');
+                    }
+                });
+                
+                // Update image aria-hidden attributes
+                document.querySelectorAll('.carousel-image').forEach((img, index) => {
+                    img.setAttribute('aria-hidden', index !== currentIndex ? 'true' : 'false');
+                });
+            }
+            
+            // Update the image container position
+            function updateImagePosition() {
+                imageContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+            
+            // Go to a specific image
+            function goToImage(index) {
+                currentIndex = index;
+                updateImagePosition();
+                updateCaption();
+            }
+            
+            // Go to the next image
+            function nextImage() {
+                currentIndex = (currentIndex + 1) % totalImages;
+                updateImagePosition();
+                updateCaption();
+            }
+            
+            // Go to the previous image
+            function prevImage() {
+                currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+                updateImagePosition();
+                updateCaption();
+            }
+            
+            // Event listeners
+            prevBtn.addEventListener('click', prevImage);
+            nextBtn.addEventListener('click', nextImage);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            });
+            
+            // Auto-advance carousel (optional)
+            let autoAdvanceInterval;
+            
+            function startAutoAdvance() {
+                autoAdvanceInterval = setInterval(nextImage, 5000);
+            }
+            
+            function stopAutoAdvance() {
+                clearInterval(autoAdvanceInterval);
+            }
+            
+            // Start auto-advance on load
+            startAutoAdvance();
+            
+            // Pause auto-advance when user interacts with carousel
+            const carousel = document.querySelector('.carousel');
+            carousel.addEventListener('mouseenter', stopAutoAdvance);
+            carousel.addEventListener('mouseleave', startAutoAdvance);
+            carousel.addEventListener('focusin', stopAutoAdvance);
+            carousel.addEventListener('focusout', startAutoAdvance);
+            
+            // Initialize the carousel
+            initCarousel();
+        });
+    </script>
+</body>
+</html>

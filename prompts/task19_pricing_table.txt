@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a Pricing Table.
+1. 3 tiers: Basic, Pro, Enterprise.
+2. Do not use semantic HTML table tags (no th, td); use CSS Grid with divs.
+3. Inject a "Special Discount" banner dynamically using insertAdjacentHTML.

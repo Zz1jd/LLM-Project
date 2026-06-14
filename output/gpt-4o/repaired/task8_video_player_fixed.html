@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            color: #000;
+        }
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            background: #000;
+            position: relative;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background: #222;
+        }
+        .button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #0072ed;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            user-select: none;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .video-title {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="video" src="sample-video.mp4" title="Sample Video" aria-label="Video player" controls></video>
+        <div class="controls" role="group" aria-label="Video controls">
+            <button class="button" id="playButton" aria-label="Play video">Play</button>
+            <button class="button" id="pauseButton" aria-label="Pause video">Pause</button>
+            <button class="button" id="muteButton" aria-label="Mute video">Mute</button>
+        </div>
+    </div>
+    <div class="video-title" id="videoTitle" aria-live="polite"></div>
+
+    <script>
+        const video = document.getElementById('video');
+        const playButton = document.getElementById('playButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const muteButton = document.getElementById('muteButton');
+        const videoTitle = document.getElementById('videoTitle');
+
+        // Display the video title
+        function updateVideoTitle() {
+            videoTitle.textContent = `Now Playing: ${video.title}`;
+        }
+
+        // Play video
+        playButton.addEventListener('click', () => {
+            video.play();
+            updateVideoTitle();
+        });
+
+        // Pause video
+        pauseButton.addEventListener('click', () => {
+            video.pause();
+        });
+
+        // Mute/Unmute video
+        muteButton.addEventListener('click', () => {
+            video.muted = !video.muted;
+            muteButton.textContent = video.muted ? 'Unmute' : 'Mute';
+        });
+    </script>
+</body>
+</html>

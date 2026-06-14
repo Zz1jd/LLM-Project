@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search with Autocomplete</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .search-label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: #95a5a6;
+        }
+        
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+        
+        .autocomplete-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        
+        .autocomplete-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .autocomplete-item.selected {
+            background-color: #e3f2fd;
+        }
+        
+        .item-icon {
+            margin-right: 12px;
+            color: #3498db;
+            font-size: 18px;
+        }
+        
+        .results-container {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .results-title {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .results-content {
+            color: #34495e;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        
+        .instructions {
+            background-color: #f1f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            color: #555;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .search-input {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Search with Autocomplete</h1>
+    <p class="subtitle">Start typing to see autocomplete suggestions</p>
+    
+    <div class="container">
+        <div class="search-container">
+            <label for="searchInput" class="search-label">Search input</label>
+            <input type="text" 
+                   class="search-input" 
+                   id="searchInput" 
+                   placeholder="Search for products, categories, or brands..."
+                   aria-label="Search for products, categories, or brands"
+                   aria-autocomplete="list"
+                   aria-controls="autocompleteDropdown"
+                   aria-expanded="false">
+            <div class="autocomplete-dropdown" id="autocompleteDropdown" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+        
+        <div class="results-container">
+            <div class="results-title" id="resultsTitle">Results for: <span class="highlight">Start typing above</span></div>
+            <div class="results-content" id="resultsContent">Your search results will appear here when you type in the search box or select an item from the dropdown.</div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use this search:</h3>
+            <ul>
+                <li>Start typing in the search box to see autocomplete suggestions</li>
+                <li>Use <span class="highlight">arrow keys</span> or <span class="highlight">mouse</span> to navigate suggestions</li>
+                <li>Press <span class="highlight">Enter</span> or <span class="highlight">click</span> to select an item</li>
+                <li>Selected item will appear in the results section</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Mock search results data
+        const mockResults = [
+            "JavaScript Tutorial",
+            "JavaScript Frameworks",
+            "JavaScript ES6 Features",
+            "React.js Development",
+            "Vue.js Framework",
+            "Angular Applications",
+            "Node.js Backend",
+            "TypeScript Programming",
+            "Web Development Tools",
+            "CSS Flexbox Guide",
+            "CSS Grid Layout",
+            "HTML5 Semantics",
+            "Frontend Development",
+            "Backend Development",
+            "Full Stack Development",
+            "Mobile App Development",
+            "UI/UX Design Principles",
+            "Responsive Web Design",
+            "Web Performance Optimization",
+            "API Integration Guide"
+        ];
+        
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsContent = document.getElementById('resultsContent');
+        const resultsHighlight = resultsTitle.querySelector('.highlight');
+        
+        // State variables
+        let selectedIndex = -1;
+        let filteredResults = [];
+        
+        // Event listeners
+        searchInput.addEventListener('input', handleInput);
+        searchInput.addEventListener('keydown', handleKeyDown);
+        
+        // Handle input changes
+        function handleInput() {
+            const query = searchInput.value.trim();
+            
+            // Update results title
+            if (query.length > 0) {
+                resultsHighlight.textContent = query;
+                resultsContent.textContent = `Searching for "${query}" in our database...`;
+            } else {
+                resultsHighlight.textContent = 'Start typing above';
+                resultsContent.textContent = 'Your search results will appear here when you type in the search box or select an item from the dropdown.';
+            }
+            
+            // Filter mock results based on query
+            if (query.length > 0) {
+                filteredResults = mockResults.filter(item => 
+                    item.toLowerCase().includes(query.toLowerCase())
+                ).slice(0, 8); // Limit to 8 results
+            } else {
+                filteredResults = [];
+            }
+            
+            // Show/hide dropdown
+            if (filteredResults.length > 0) {
+                showDropdown();
+            } else {
+                hideDropdown();
+            }
+            
+            // Reset selected index
+            selectedIndex = -1;
+        }
+        
+        // Handle keyboard navigation
+        function handleKeyDown(e) {
+            if (!autocompleteDropdown.style.display || autocompleteDropdown.style.display === 'none') {
+                return;
+            }
+            
+            // Arrow down
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % filteredResults.length;
+                updateDropdownSelection();
+            }
+            
+            // Arrow up
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = selectedIndex <= 0 ? filteredResults.length - 1 : selectedIndex - 1;
+                updateDropdownSelection();
+            }
+            
+            // Enter key
+            if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                selectItem(filteredResults[selectedIndex]);
+            }
+            
+            // Escape key
+            if (e.key === 'Escape') {
+                hideDropdown();
+            }
+        }
+        
+        // Show dropdown with filtered results
+        function showDropdown() {
+            // Clear dropdown safely
+            while (autocompleteDropdown.firstChild) {
+                autocompleteDropdown.removeChild(autocompleteDropdown.firstChild);
+            }
+            
+            filteredResults.forEach((result, index) => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.setAttribute('role', 'option');
+                item.setAttribute('id', `suggestion-${index}`);
+                item.setAttribute('aria-selected', 'false');
+                item.setAttribute('tabindex', '-1');
+                
+                const icon = document.createElement('div');
+                icon.className = 'item-icon';
+                icon.textContent = '🔍';
+                
+                const text = document.createElement('div');
+                highlightMatch(text, result, searchInput.value);
+                
+                item.appendChild(icon);
+                item.appendChild(text);
+                
+                // Use event listeners instead of inline handlers
+                item.addEventListener('click', function() {
+                    selectItem(result);
+                });
+                item.addEventListener('mouseenter', function() {
+                    selectedIndex = index;
+                    updateDropdownSelection();
+                });
+                
+                autocompleteDropdown.appendChild(item);
+            });
+            
+            autocompleteDropdown.style.display = 'block';
+            searchInput.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Hide dropdown
+        function hideDropdown() {
+            autocompleteDropdown.style.display = 'none';
+            selectedIndex = -1;
+            searchInput.setAttribute('aria-expanded', 'false');
+        }
+        
+        // Update dropdown selection visually
+        function updateDropdownSelection() {
+            const items = autocompleteDropdown.querySelectorAll('.autocomplete-item');
+            
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('selected');
+                    item.setAttribute('aria-selected', 'true');
+                    // Scroll into view if needed
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                    item.setAttribute('aria-selected', 'false');
+                }
+            });
+        }
+        
+        // Select an item from dropdown
+        function selectItem(item) {
+            searchInput.value = item;
+            resultsHighlight.textContent = item;
+            resultsContent.textContent = `You selected "${item}". Here are the detailed results for this search term. In a real application, this would show actual search results.`;
+            
+            hideDropdown();
+            searchInput.focus();
+        }
+        
+        // Highlight matching text in results
+        function highlightMatch(element, text, query) {
+            if (!query) {
+                element.textContent = text;
+                return;
+            }
+            
+            const lowerText = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            const startIndex = lowerText.indexOf(lowerQuery);
+            
+            if (startIndex === -1) {
+                element.textContent = text;
+                return;
+            }
+            
+            const endIndex = startIndex + query.length;
+            const before = text.substring(0, startIndex);
+            const match = text.substring(startIndex, endIndex);
+            const after = text.substring(endIndex);
+            
+            // Clear element safely
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+            
+            if (before) {
+                element.appendChild(document.createTextNode(before));
+            }
+            
+            const highlightSpan = document.createElement('span');
+            highlightSpan.className = 'highlight';
+            highlightSpan.textContent = match;
+            element.appendChild(highlightSpan);
+            
+            if (after) {
+                element.appendChild(document.createTextNode(after));
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+                hideDropdown();
+            }
+        });
+        
+        // Initialize with some example
+        setTimeout(function() {
+            searchInput.value = "JavaScript";
+            handleInput();
+        }, 500);
+    </script>
+</body>
+</html>

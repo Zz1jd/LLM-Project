@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a Toast Notification.
+1. A floating notification box that appears in the top right.
+2. It should disappear automatically after 3 seconds.
+3. The message content must be injected using innerHTML when the toast is triggered.

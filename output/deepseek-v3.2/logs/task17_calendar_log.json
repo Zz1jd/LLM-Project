@@ -1,0 +1,68 @@
+{
+  "task": "task17_calendar",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 27,
+    "a11yErrors": 25,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.15:1. Recommendation:  change background to #177bbe. | [Affected Elements] #prev-month, #today-btn, #next-month",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.48:1. Recommendation:  change text colour to #6c797a. | [Affected Elements] html > body > div > div:nth-child(2) > div:nth-child(1), html > body > div > div:nth-child(2) > div:nth-child(2), html > body > div > div:nth-child(2) > div:nth-child(3) (+5 more)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 1.78:1. Recommendation:  change text colour to #71777b. | [Affected Elements] #calendar-grid > div:nth-child(1), #calendar-grid > div:nth-child(2), #calendar-grid > div:nth-child(3) (+9 more)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 2.82:1. Recommendation:  change background to #f4fbff. | [Affected Elements] #calendar-grid > div:nth-child(4)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 2.99:1. Recommendation:  change background to #f9fafb. | [Affected Elements] #selection-display > span"
+      ],
+      "security": [
+        "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 3,
+      "a11yErrors": 1,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.48:1. Recommendation:  change text colour to #6c797a. | [Affected Elements] html > body > div > div:nth-child(5)"
+        ],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 3,
+      "a11yErrors": 1,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.48:1. Recommendation:  change text colour to #6c797a. | [Affected Elements] html > body > div > div:nth-child(5)"
+        ],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 2
+  }
+}

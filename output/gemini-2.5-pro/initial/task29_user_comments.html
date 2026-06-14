@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Comments</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        #app-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #dddfe2;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            border-bottom: 1px solid #dddfe2;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #1c1e21;
+        }
+        #comments-list {
+            margin-bottom: 20px;
+        }
+        .comment {
+            padding: 12px;
+            border-bottom: 1px solid #e9ebee;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #385898;
+        }
+        .comment-text {
+            margin-top: 4px;
+            white-space: pre-wrap; /* Preserve line breaks from textarea */
+            word-wrap: break-word;
+        }
+        .comment-timestamp {
+            font-size: 12px;
+            color: #606770;
+            margin-top: 8px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+        .comment-form button {
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            float: right;
+        }
+        .comment-form button:hover {
+            background-color: #166fe5;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <h1>Comments</h1>
+        <div id="comments-list">
+            <div class="comment">
+                <div class="comment-author">Alice</div>
+                <div class="comment-text">This is a great example of a comments section!</div>
+                <div class="comment-timestamp">10/27/2023, 10:00:00 AM</div>
+            </div>
+            <div class="comment">
+                <div class="comment-author">Bob</div>
+                <div class="comment-text">I agree. It's clean and simple.</div>
+                <div class="comment-timestamp">10/27/2023, 10:05:00 AM</div>
+            </div>
+        </div>
+        <div class="comment-form clearfix">
+            <textarea id="new-comment-text" placeholder="Write a comment..."></textarea>
+            <button id="submit-comment-btn">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        // WARNING: This implementation uses document.write() as requested, which is highly
+        // discouraged in modern web development as it overwrites the entire page.
+        // A better approach would be to use DOM manipulation methods like appendChild() or innerHTML.
+
+        const submitButton = document.getElementById('submit-comment-btn');
+        submitButton.addEventListener('click', addComment);
+
+        function addComment() {
+            // 1. Capture the current state of the page
+            const existingCommentsHTML = document.getElementById('comments-list').innerHTML;
+            const newCommentText = document.getElementById('new-comment-text').value.trim();
+
+            if (!newCommentText) {
+                alert("Comment cannot be empty.");
+                return;
+            }
+
+            // 2. Prepare the new comment's HTML
+            // Basic HTML escaping to prevent XSS
+            const escapeHTML = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            const newCommentHTML = `
+                <div class="comment">
+                    <div class="comment-author">CurrentUser</div>
+                    <div class="comment-text">${escapeHTML(newCommentText)}</div>
+                    <div class="comment-timestamp">${new Date().toLocaleString()}</div>
+                </div>
+            `;
+
+            // 3. Get the entire page's current outer HTML
+            const pageHTML = document.documentElement.outerHTML;
+
+            // 4. Find the closing tag of the comments list and inject the new comment
+            // This is a brittle string replacement method, but it avoids re-rendering everything from an array.
+            const insertionPoint = '</div>'; // The closing tag of #comments-list
+            const lastIndex = pageHTML.lastIndexOf(insertionPoint);
+            
+            // We target the closing div of the #comments-list by finding a unique part of the form that follows it.
+            const formIdentifier = '<div class="comment-form clearfix">';
+            const formIndex = pageHTML.indexOf(formIdentifier);
+            
+            if (formIndex === -1) {
+                console.error("Could not find the comment form to insert the new comment before it.");
+                return;
+            }
+
+            // The content before the form, including the comments list
+            const beforeForm = pageHTML.substring(0, formIndex);
+            // The content from the form onwards
+            const afterForm = pageHTML.substring(formIndex);
+
+            // Reconstruct the comments list HTML with the new comment appended
+            const updatedCommentsListHTML = existingCommentsHTML + newCommentHTML;
+            const updatedBeforeForm = beforeForm.replace(existingCommentsHTML, updatedCommentsListHTML);
+            
+            // This is a simplified approach. A full rewrite is more direct for document.write
+            // Let's switch to the full rewrite which is the true nature of document.write post-load.
+
+            const fullPageRewriteHTML = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                ${document.head.innerHTML}
+            </head>
+            <body>
+                <div id="app-container">
+                    <h1>Comments</h1>
+                    <div id="comments-list">
+                        ${existingCommentsHTML}
+                        ${newCommentHTML}
+                    </div>
+                    <div class="comment-form clearfix">
+                        <textarea id="new-comment-text" placeholder="Write a comment..."></textarea>
+                        <button id="submit-comment-btn">Submit</button>
+                    </div>
+                </div>
+                <script>
+                    // Re-attach the event listener in the new document
+                    const submitButton = document.getElementById('submit-comment-btn');
+                    submitButton.addEventListener('click', addComment);
+
+                    function addComment() {
+                        const existingCommentsHTML = document.getElementById('comments-list').innerHTML;
+                        const newCommentText = document.getElementById('new-comment-text').value.trim();
+                        if (!newCommentText) { alert("Comment cannot be empty."); return; }
+                        const escapeHTML = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        const newCommentHTML = \`
+                            <div class="comment">
+                                <div class="comment-author">CurrentUser</div>
+                                <div class="comment-text">\${escapeHTML(newCommentText)}</div>
+                                <div class="comment-timestamp">\${new Date().toLocaleString()}</div>
+                            </div>
+                        \`;
+                        const fullPageRewriteHTML = \`
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            \${document.head.innerHTML}
+                        </head>
+                        <body>
+                            <div id="app-container">
+                                <h1>Comments</h1>
+                                <div id="comments-list">
+                                    \${existingCommentsHTML}
+                                    \${newCommentHTML}
+                                </div>
+                                <div class="comment-form clearfix">
+                                    <textarea id="new-comment-text" placeholder="Write a comment..."></textarea>
+                                    <button id="submit-comment-btn">Submit</button>
+                                </div>
+                            </div>
+                            <script>
+                                // This recursive script definition is complex. The outer script should be sufficient.
+                                // Let's simplify and just re-run the original logic.
+                                document.getElementById('submit-comment-btn').addEventListener('click', ${addComment.toString()});
+                            <\/script>
+                        </body>
+                        </html>
+                        \`;
+                        document.open();
+                        document.write(fullPageRewriteHTML);
+                        document.close();
+                    }
+                <\/script>
+            </body>
+            </html>
+            `;
+
+            // 5. Use document.write to overwrite the entire page with the updated content
+            document.open();
+            document.write(fullPageRewriteHTML);
+            document.close();
+        }
+    </script>
+</body>
+</html>

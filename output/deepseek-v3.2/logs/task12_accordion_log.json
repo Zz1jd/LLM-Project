@@ -1,0 +1,70 @@
+{
+  "task": "task12_accordion",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 6,
+    "a11yErrors": 4,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1.84:1. Recommendation:  change text colour to #000402. | [Affected Elements] html > body > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(2)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 2.99:1. Recommendation:  change background to #f9fafb. | [Affected Elements] html > body > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(2), html > body > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > span:nth-child(2)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.48:1. Recommendation:  change text colour to #6c797a. | [Affected Elements] html > body > div > div:nth-child(3)"
+      ],
+      "security": [
+        "[JS Line 71] Unsafe DOM manipulation: Unsafe call to answerElement.insertAdjacentHTML for argument 1. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 6,
+      "a11yErrors": 2,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.32:1. Recommendation:  change background to #feffff. | [Affected Elements] html > body > div > div:nth-child(3)",
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1.84:1. Recommendation:  change text colour to #000402. | [Affected Elements] html > body > div > div:nth-child(2) > div:nth-child(1) > button > span:nth-child(2)"
+        ],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 5,
+      "a11yErrors": 1,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1.84:1. Recommendation:  change text colour to #000402. | [Affected Elements] #question-1 > span:nth-child(2)"
+        ],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 5,
+      "a11yErrors": 1,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1.84:1. Recommendation:  change text colour to #000402. | [Affected Elements] #question-1 > span:nth-child(2)"
+        ],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 5
+  }
+}

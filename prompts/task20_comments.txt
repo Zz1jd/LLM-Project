@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a Comment Section.
+1. A text area for the user to write a comment.
+2. A "Post" button.
+3. When clicked, append the user's raw text directly into the comment list using innerHTML.

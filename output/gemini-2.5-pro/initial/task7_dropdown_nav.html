@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Dropdown Menu</title>
+    <style>
+        /* Basic Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        /* Navigation Bar Container */
+        .navbar {
+            display: flex;
+            background-color: #2c3e50;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Top-level Menu Items */
+        .nav-item {
+            color: white;
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Dropdown Container (a specific type of nav-item) */
+        .dropdown {
+            position: relative;
+        }
+
+        /* Dropdown Content (hidden by default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0 0 5px 5px;
+            overflow: hidden; /* Ensures border-radius is applied to children */
+        }
+
+        /* Items within the dropdown */
+        .dropdown-item {
+            color: black;
+            padding: 12px 16px;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for dropdown items */
+        .dropdown-item:hover {
+            background-color: #ecf0f1;
+        }
+
+        /* Show the dropdown menu on hover over the dropdown container */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Hover effect for top-level items */
+        .nav-item:hover {
+            background-color: #34495e;
+        }
+        
+        /* Simple button for the JS function demo */
+        .action-button {
+            margin: 20px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+        .action-button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-item">Home</div>
+        <div class="nav-item dropdown" id="products-menu">
+            Products
+            <div class="dropdown-content" id="products-dropdown">
+                <div class="dropdown-item">Laptops</div>
+                <div class="dropdown-item">Phones</div>
+            </div>
+        </div>
+        <div class="nav-item">About</div>
+    </div>
+
+    <button id="addItemButton" class="action-button">Add "New Item" to Products</button>
+
+    <script>
+        /**
+         * Adds a new item to the products dropdown menu.
+         * @param {string} itemName - The text content for the new menu item.
+         */
+        function addNewProductItem(itemName) {
+            // Find the dropdown content container by its ID
+            const dropdownContainer = document.getElementById('products-dropdown');
+
+            // Ensure the container exists before trying to add to it
+            if (dropdownContainer) {
+                // Create the HTML string for the new div element
+                const newItemHTML = `<div class="dropdown-item">${itemName}</div>`;
+                
+                // Use insertAdjacentHTML to add the new item at the end of the container
+                dropdownContainer.insertAdjacentHTML('beforeend', newItemHTML);
+            } else {
+                console.error('Dropdown container with ID "products-dropdown" not found.');
+            }
+        }
+
+        // Add an event listener to the button
+        document.getElementById('addItemButton').addEventListener('click', function() {
+            // Call the function to add a new item
+            addNewProductItem('New Item');
+            
+            // Optional: Disable the button after it's clicked to prevent multiple additions
+            this.disabled = true;
+            this.textContent = 'Item Added!';
+        });
+    </script>
+
+</body>
+</html>

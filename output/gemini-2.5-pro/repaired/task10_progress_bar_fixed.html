@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Progress</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        main {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .upload-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        /* Visually hide the label, but make it accessible to screen readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        #fileInput {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: calc(100% - 22px); /* Account for padding and border */
+        }
+
+        #uploadButton {
+            background-color: #177bbe; /* Changed for A11y contrast */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #uploadButton:hover {
+            background-color: #1468a0; /* Darker, accessible hover state */
+        }
+        
+        #uploadButton:disabled {
+            background-color: #bdc3c7;
+            color: #2c3e50; /* A11y: Added dark text for contrast on disabled state */
+            cursor: not-allowed;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #ecf0f1;
+            border-radius: 25px;
+            margin-top: 25px;
+            overflow: hidden;
+            position: relative;
+            height: 30px;
+            border: 1px solid #bdc3c7;
+            display: none; /* Initially hidden */
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #1f6a9c; /* A11y: Darker blue for better contrast */
+            border-radius: 25px;
+            transition: width 0.2s linear, background-color 0.5s ease, color 0.5s ease;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+        }
+
+        #statusMessage {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #27ae60;
+            min-height: 24px; /* Reserve space to prevent layout shift */
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="upload-container">
+            <h1>File Upload Progress</h1>
+            <label for="fileInput" class="sr-only">Select a file to upload</label>
+            <input type="file" id="fileInput">
+            <button id="uploadButton">Start Upload</button>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <p id="statusMessage" role="status"></p>
+        </div>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const statusMessage = document.getElementById('statusMessage');
+
+        uploadButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+
+            // A11y: Reset aria-live to polite for subsequent success messages.
+            // role="status" defaults to polite, but we set it explicitly for clarity.
+            statusMessage.setAttribute('aria-live', 'polite');
+
+            if (!file) {
+                statusMessage.textContent = "Please select a file first!";
+                statusMessage.style.color = '#e74c3c';
+                // A11y: Make error messages assertive to ensure they are announced immediately by screen readers.
+                statusMessage.setAttribute('aria-live', 'assertive');
+                return;
+            }
+
+            // Reset UI for a new upload
+            uploadButton.disabled = true;
+            statusMessage.textContent = '';
+            statusMessage.style.color = '#27ae60';
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+            progressBar.setAttribute('aria-valuenow', '0');
+            progressBar.style.backgroundColor = '#1f6a9c'; // A11y: Use accessible color
+            progressBar.style.color = 'white'; // A11y: Reset text color
+            progressContainer.style.display = 'block';
+
+            let progress = 0;
+            const uploadInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 5) + 1; // Simulate variable upload speed
+                if (progress > 100) {
+                    progress = 100;
+                }
+
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+                progressBar.setAttribute('aria-valuenow', progress);
+
+                if (progress === 100) {
+                    clearInterval(uploadInterval);
+                    progressBar.style.backgroundColor = '#2ecc71';
+                    progressBar.style.color = '#111'; // A11y: Change text color for contrast on green bg
+                    
+                    // Security: Use safe DOM manipulation methods instead of innerHTML to prevent DOM-XSS
+                    statusMessage.textContent = ''; // Clear previous content
+                    statusMessage.append('Upload of ');
+                    const fileNameElement = document.createElement('strong');
+                    // Sanitize file name by setting it as textContent
+                    fileNameElement.textContent = file.name;
+                    statusMessage.appendChild(fileNameElement);
+                    statusMessage.append(' complete!');
+
+                    uploadButton.disabled = false;
+                }
+            }, 100);
+        });
+    </script>
+
+</body>
+</html>

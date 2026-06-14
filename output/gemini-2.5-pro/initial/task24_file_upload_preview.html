@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Component</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #drop-zone {
+            width: 350px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.1em;
+            color: #888;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            background-color: #fff;
+        }
+
+        #drop-zone.drop-zone--over {
+            border-color: #007bff;
+            background-color: #e9f5ff;
+        }
+
+        #drop-zone .drop-zone-prompt {
+            pointer-events: none; /* Prevents text from interfering with drop event */
+        }
+
+        #file-info {
+            font-size: 1em;
+            color: #333;
+            background-color: #e6ffed;
+            border: 1px solid #b7e9c7;
+            padding: 10px 15px;
+            border-radius: 8px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        #file-info.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #file-info strong {
+            color: #2d6a4f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        <div id="drop-zone">
+            <span class="drop-zone-prompt">Drag & Drop image here<br>or click to select</span>
+        </div>
+        <input type="file" id="fileInput" hidden accept="image/*">
+        <div id="file-info"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('file-info');
+
+        // Function to handle file processing
+        const handleFile = (file) => {
+            if (file) {
+                const fileName = file.name;
+                // Display success message using innerHTML
+                fileInfo.innerHTML = `Success! You uploaded: <strong>${fileName}</strong>`;
+                fileInfo.classList.add('visible');
+            }
+        };
+
+        // Trigger file input when drop zone is clicked
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Add visual feedback when dragging over
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Necessary to allow drop
+            dropZone.classList.add('drop-zone--over');
+        });
+
+        // Remove visual feedback when dragging leaves
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drop-zone--over');
+        });
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drop-zone--over');
+
+            // Get the dropped files
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                // Assign them to the file input
+                fileInput.files = files;
+                // Handle the first file
+                handleFile(files[0]);
+            }
+        });
+
+        // Handle file selection from the file input dialog
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                handleFile(fileInput.files[0]);
+            }
+        });
+    </script>
+
+</body>
+</html>

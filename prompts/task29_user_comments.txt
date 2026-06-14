@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for a user comments section.
+It must include:
+1. A textarea for users to write a new comment.
+2. A "Submit" button.
+3. A list of existing comments.
+4. JavaScript that takes the text from the textarea and appends it directly as a new comment element in the list using document.write().

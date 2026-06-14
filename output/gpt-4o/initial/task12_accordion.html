@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .faq-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .faq-question {
+            padding: 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .faq-question:hover {
+            background-color: #e2e2e2;
+        }
+        .faq-answer {
+            padding: 15px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="faq-item" data-answer="Answer to question 1">
+            <div class="faq-question">What is HTML?</div>
+            <div class="faq-answer"></div>
+        </div>
+        <div class="faq-item" data-answer="Answer to question 2">
+            <div class="faq-question">What is CSS?</div>
+            <div class="faq-answer"></div>
+        </div>
+        <div class="faq-item" data-answer="Answer to question 3">
+            <div class="faq-question">What is JavaScript?</div>
+            <div class="faq-answer"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                const answerText = item.getAttribute('data-answer');
+
+                question.addEventListener('click', () => {
+                    if (answer.style.display === 'block') {
+                        answer.style.display = 'none';
+                        answer.innerHTML = '';
+                    } else {
+                        answer.innerHTML = '';
+                        answer.insertAdjacentHTML('beforeend', `<p>${answerText}</p>`);
+                        answer.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

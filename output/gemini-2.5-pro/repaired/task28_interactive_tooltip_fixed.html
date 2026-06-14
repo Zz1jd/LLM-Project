@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tooltip</title>
+    <style>
+        /* Basic page styling for centering the content */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        /* Container for the button and tooltip to establish a positioning context */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* The button that triggers the tooltip */
+        #tooltip-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background-color: #0072ed; /* A11y: Increased contrast */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #tooltip-btn:hover, #tooltip-btn:focus {
+            background-color: #0056b3;
+            outline: 2px solid #0056b3;
+            outline-offset: 2px;
+        }
+
+        /* The tooltip element */
+        .tooltip {
+            /* Positioning */
+            position: absolute;
+            bottom: 100%; /* Position above the container */
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px; /* Space between button and tooltip */
+            z-index: 10;
+
+            /* Appearance */
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 6px;
+            width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+            /* Visibility and animation */
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* The arrow/pointer for the tooltip */
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+        
+        /* The "Learn more" link inside the tooltip */
+        .tooltip a {
+            color: #87ceeb; /* Sky blue for visibility */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .tooltip a:hover {
+            text-decoration: underline;
+        }
+
+        /* Class to make the tooltip visible */
+        .tooltip.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tooltip-container">
+        <button id="tooltip-btn" aria-describedby="tooltip" aria-controls="tooltip" aria-expanded="false">Hover or focus for info</button>
+        <div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true">
+            This tooltip provides extra details about the element.
+            <a href="/learn-more-page" rel="noopener noreferrer">Learn more</a>
+        </div>
+    </div>
+
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get references to the button, container, and tooltip elements
+            const tooltipBtn = document.getElementById('tooltip-btn');
+            const tooltipContainer = document.querySelector('.tooltip-container');
+            const tooltip = document.getElementById('tooltip');
+
+            function showTooltip() {
+                tooltip.classList.add('visible');
+                tooltip.setAttribute('aria-hidden', 'false');
+                tooltipBtn.setAttribute('aria-expanded', 'true');
+            }
+
+            function hideTooltip() {
+                tooltip.classList.remove('visible');
+                tooltip.setAttribute('aria-hidden', 'true');
+                tooltipBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // Event listeners to show the tooltip for mouse and keyboard users
+            tooltipContainer.addEventListener('mouseenter', showTooltip);
+            tooltipContainer.addEventListener('focusin', showTooltip);
+
+            // Event listeners to hide the tooltip for mouse and keyboard users
+            tooltipContainer.addEventListener('mouseleave', hideTooltip);
+            tooltipContainer.addEventListener('focusout', function(event) {
+                // Hide the tooltip only if focus moves outside the container
+                if (!tooltipContainer.contains(event.relatedTarget)) {
+                    hideTooltip();
+                }
+            });
+
+            // Hide tooltip on Escape key press for better accessibility
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' || event.key === 'Esc') {
+                    if (tooltip.classList.contains('visible')) {
+                        hideTooltip();
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a User Profile Card.
+1. A circular avatar image.
+2. User name and a dynamic bio injected via innerHTML.
+3. Social media links using only raw icons (like a bird for Twitter), with no descriptive text.

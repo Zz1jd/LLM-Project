@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a To-Do list.
+1. An input field and an "Add" button.
+2. Clicking Add inserts the new task into the list using insertAdjacentHTML.
+3. A visual way to mark tasks as complete (e.g., CSS line-through).

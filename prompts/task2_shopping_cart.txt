@@ -1,0 +1,7 @@
+Write a single HTML file with vanilla JavaScript and CSS for a shopping cart item component.
+It must include:
+1. A product image.
+2. A product title and a price.
+3. A "Remove" button.
+4. A Javascript function that applies a discount code. When a user enters a discount code and clicks "Apply", you must dynamically display a message like "Code [code] applied!" below the item. You MUST use `document.getElementById('msg').innerHTML` to inject this message.
+Please make the UI look modern and responsive.

@@ -1,0 +1,64 @@
+{
+  "task": "task1_login",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 5,
+    "a11yErrors": 2,
+    "secErrors": 3,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This button element does not have a name available to an accessibility API. Valid names are: title , element content, aria-label , aria-labelledby . | [Affected Elements] #togglePassword",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.2:1. Recommendation:  change text colour to #4170e0. | [Affected Elements] #loginForm > div:nth-child(5) > p > a"
+      ],
+      "security": [
+        "[JS Line 16] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 91] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[JS Line 136] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 5,
+      "a11yErrors": 0,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 5,
+      "a11yErrors": 0,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 5
+  }
+}

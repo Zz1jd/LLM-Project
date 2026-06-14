@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Calendar</title>
+    <style>
+        :root {
+            --primary-color: #0069d9;
+            --light-gray: #f0f0f0;
+            --dark-gray: #666;
+            --border-color: #ddd;
+            --today-highlight: #c78300;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--light-gray);
+            margin: 0;
+            color: #333;
+        }
+
+        .calendar-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--dark-gray);
+            transition: color 0.2s;
+            padding: 0 10px;
+        }
+
+        .calendar-header button:hover {
+            color: var(--primary-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day-name, .day-cell {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .day-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .day-cell {
+            border: 1px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            line-height: 1.5;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .day-cell:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        .day-cell:not(.other-month):hover {
+            background-color: var(--light-gray);
+        }
+
+        .other-month {
+            color: #595959;
+            cursor: default;
+        }
+
+        .today {
+            border: 1px solid var(--today-highlight);
+            font-weight: bold;
+        }
+
+        .selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .selected:hover {
+            background-color: #0056b3;
+        }
+
+        #selected-date-display {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            min-height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button id="prev-month" aria-label="Previous month"><span aria-hidden="true">‹</span></button>
+            <h2 id="month-year" role="heading" aria-level="2"></h2>
+            <button id="next-month" aria-label="Next month"><span aria-hidden="true">›</span></button>
+        </div>
+        <div class="calendar-grid" id="calendar-days" role="grid" aria-labelledby="month-year"></div>
+        <p id="selected-date-display" aria-live="polite" aria-atomic="true">Selected: None</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const monthYearDisplay = document.getElementById('month-year');
+            const calendarDays = document.getElementById('calendar-days');
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const selectedDateDisplay = document.getElementById('selected-date-display');
+
+            let currentDate = new Date();
+            let focusedDate = new Date();
+
+            function renderCalendar() {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                monthYearDisplay.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+                calendarDays.textContent = ''; // Securely clear previous content
+
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayNames.forEach(day => {
+                    const dayNameCell = document.createElement('div');
+                    dayNameCell.classList.add('day-name');
+                    dayNameCell.setAttribute('role', 'columnheader');
+                    dayNameCell.textContent = day;
+                    calendarDays.appendChild(dayNameCell);
+                });
+
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+                for (let i = firstDayOfMonth; i > 0; i--) {
+                    const dayCell = document.createElement('div');
+                    dayCell.setAttribute('role', 'gridcell');
+                    dayCell.classList.add('day-cell', 'other-month');
+                    dayCell.setAttribute('aria-disabled', 'true');
+                    dayCell.textContent = daysInPrevMonth - i + 1;
+                    calendarDays.appendChild(dayCell);
+                }
+
+                const today = new Date();
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayCell = document.createElement('div');
+                    const cellDate = new Date(year, month, i);
+                    
+                    dayCell.setAttribute('role', 'gridcell');
+                    dayCell.classList.add('day-cell');
+                    dayCell.textContent = i;
+                    dayCell.dataset.date = cellDate.toISOString();
+                    dayCell.setAttribute('aria-selected', 'false');
+                    dayCell.setAttribute('tabindex', '-1');
+                    dayCell.setAttribute('aria-label', cellDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+
+                    if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
+                        dayCell.classList.add('today');
+                        dayCell.setAttribute('aria-current', 'date');
+                    }
+
+                    if (year === focusedDate.getFullYear() && month === focusedDate.getMonth() && i === focusedDate.getDate()) {
+                        dayCell.setAttribute('tabindex', '0');
+                    }
+
+                    calendarDays.appendChild(dayCell);
+                }
+                
+                const totalCells = 7 + firstDayOfMonth + daysInMonth;
+                const remainingCells = (totalCells % 7 === 0) ? 0 : 7 - (totalCells % 7);
+                
+                for (let i = 1; i <= remainingCells; i++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.setAttribute('role', 'gridcell');
+                    dayCell.classList.add('day-cell', 'other-month');
+                    dayCell.setAttribute('aria-disabled', 'true');
+                    dayCell.textContent = i;
+                    calendarDays.appendChild(dayCell);
+                }
+            }
+
+            function updateSelection(targetCell) {
+                if (!targetCell || targetCell.classList.contains('other-month')) {
+                    return;
+                }
+                
+                const prevSelected = calendarDays.querySelector('.selected');
+                if (prevSelected) {
+                    prevSelected.classList.remove('selected');
+                    prevSelected.setAttribute('aria-selected', 'false');
+                }
+
+                targetCell.classList.add('selected');
+                targetCell.setAttribute('aria-selected', 'true');
+
+                const selectedDate = new Date(targetCell.dataset.date);
+                selectedDateDisplay.textContent = `Selected: ${selectedDate.toDateString()}`;
+                
+                focusedDate = selectedDate;
+                const currentFocused = calendarDays.querySelector('[tabindex="0"]');
+                if (currentFocused) {
+                    currentFocused.setAttribute('tabindex', '-1');
+                }
+                targetCell.setAttribute('tabindex', '0');
+            }
+
+            function changeMonth(offset) {
+                currentDate.setMonth(currentDate.getMonth() + offset);
+                focusedDate.setMonth(focusedDate.getMonth() + offset);
+                renderCalendar();
+                const newFocusTarget = calendarDays.querySelector('[tabindex="0"]');
+                if (newFocusTarget) {
+                    newFocusTarget.focus();
+                }
+            }
+
+            prevMonthBtn.addEventListener('click', () => changeMonth(-1));
+            nextMonthBtn.addEventListener('click', () => changeMonth(1));
+
+            calendarDays.addEventListener('click', (e) => {
+                const target = e.target.closest('.day-cell');
+                if (target && !target.classList.contains('other-month')) {
+                    updateSelection(target);
+                    target.focus();
+                }
+            });
+
+            calendarDays.addEventListener('keydown', (e) => {
+                const currentCell = e.target;
+                if (!currentCell.matches('[role="gridcell"]') || currentCell.getAttribute('aria-disabled') === 'true') {
+                    return;
+                }
+
+                let newFocusedDate = new Date(focusedDate);
+                let monthChanged = false;
+
+                switch (e.key) {
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        updateSelection(currentCell);
+                        return;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        newFocusedDate.setDate(newFocusedDate.getDate() + 1);
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        newFocusedDate.setDate(newFocusedDate.getDate() - 1);
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        newFocusedDate.setDate(newFocusedDate.getDate() + 7);
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        newFocusedDate.setDate(newFocusedDate.getDate() - 7);
+                        break;
+                    case 'PageUp':
+                        e.preventDefault();
+                        newFocusedDate.setMonth(newFocusedDate.getMonth() - 1);
+                        break;
+                    case 'PageDown':
+                        e.preventDefault();
+                        newFocusedDate.setMonth(newFocusedDate.getMonth() + 1);
+                        break;
+                    default:
+                        return;
+                }
+
+                if (newFocusedDate.getMonth() !== currentDate.getMonth() || newFocusedDate.getFullYear() !== currentDate.getFullYear()) {
+                    currentDate = new Date(newFocusedDate);
+                    monthChanged = true;
+                }
+                focusedDate = newFocusedDate;
+
+                if (monthChanged) {
+                    renderCalendar();
+                }
+
+                const newFocusedCell = calendarDays.querySelector(`[data-date="${focusedDate.toISOString()}"]`) || calendarDays.querySelector('[tabindex="0"]');
+
+                if (newFocusedCell) {
+                    const oldFocusedCell = calendarDays.querySelector('[tabindex="0"]');
+                    if (oldFocusedCell) {
+                        oldFocusedCell.setAttribute('tabindex', '-1');
+                    }
+                    newFocusedCell.setAttribute('tabindex', '0');
+                    newFocusedCell.focus();
+                }
+            });
+
+            renderCalendar();
+        });
+    </script>
+
+</body>
+</html>

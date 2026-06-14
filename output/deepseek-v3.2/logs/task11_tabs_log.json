@@ -1,0 +1,64 @@
+{
+  "task": "task11_tabs",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 5,
+    "a11yErrors": 2,
+    "secErrors": 3,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.45:1. Recommendation:  change background to #fafbfc. | [Affected Elements] html > body > div > div:nth-child(1) > div:nth-child(2), html > body > div > div:nth-child(1) > div:nth-child(3)"
+      ],
+      "security": [
+        "[JS Line 118] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 134] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 4,
+      "a11yErrors": 0,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 6,
+      "a11yErrors": 2,
+      "secErrors": 4,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.08:1. Recommendation:  change background to #fbfbfb. | [Affected Elements] #settings-tab, #messages-tab"
+        ],
+        "security": [
+          "[HTML] Found 4 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 6
+  }
+}

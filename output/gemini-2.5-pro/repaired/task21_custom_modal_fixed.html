@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Modal Dialog</title>
+    <style>
+        /* CSS Variables for modern theming */
+        :root {
+            --primary-color: #0072ed; /* A11y Fix: Increased contrast */
+            --primary-hover-color: #005cb8; /* A11y Fix: Adjusted hover for new primary color */
+            --background-color: #f4f7f9;
+            --text-color: #333;
+            --light-gray: #e9ecef;
+            --white: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+
+        /* General Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+
+        /* Generic Button Styles */
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+            -webkit-tap-highlight-color: transparent; /* For mobile */
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Specific Button Styles */
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-hover-color);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .secondary-btn {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .secondary-btn:hover {
+            background-color: #d3d9df;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: #767676; /* A11y Fix: Increased contrast from #aaa */
+            padding: 0 4px;
+            transition: color 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            color: #333;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Modal Box */
+        .modal-box {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            width: 90%;
+            max-width: 500px;
+            text-align: left;
+            transform: scale(0.95) translateY(10px);
+            transition: transform var(--transition-speed) ease;
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Modal Content Sections */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: var(--text-color);
+        }
+
+        .modal-body {
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-body p {
+            margin: 0 0 1rem;
+        }
+        .modal-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--light-gray);
+            text-align: right;
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+
+    <main id="main-content">
+        <h1>Custom Modal Dialog</h1>
+        <p>Click the button below to see a modern, accessible modal.</p>
+        <button id="openModalBtn" class="btn primary-btn">Open Modal</button>
+    </main>
+
+    <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modern Modal Title</h2>
+                <button class="close-btn icon-btn" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div id="modalDescription" class="modal-body">
+                <p>This is the content of the modal. You can put any HTML content here, like forms, images, or just text. It's designed to be flexible and easy to use.</p>
+                <p>Click the close button, the 'X' in the corner, the overlay, or press the Escape key to dismiss it.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="close-btn btn secondary-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openModalBtn = document.getElementById('openModalBtn');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const closeButtons = document.querySelectorAll('.close-btn');
+            const mainContent = document.getElementById('main-content');
+            const modalBox = document.querySelector('.modal-box');
+
+            let firstFocusableElement;
+            let lastFocusableElement;
+            let previouslyFocusedElement;
+
+            const setFocusableElements = () => {
+                const focusableElements = modalBox.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                firstFocusableElement = focusableElements[0];
+                lastFocusableElement = focusableElements[focusableElements.length - 1];
+            };
+
+            const openModal = () => {
+                previouslyFocusedElement = document.activeElement;
+                modalOverlay.classList.add('active');
+                mainContent.setAttribute('aria-hidden', 'true');
+                modalOverlay.removeAttribute('aria-hidden');
+                
+                setFocusableElements();
+                firstFocusableElement.focus();
+            };
+
+            const closeModal = () => {
+                modalOverlay.classList.remove('active');
+                mainContent.removeAttribute('aria-hidden');
+                modalOverlay.setAttribute('aria-hidden', 'true');
+                if (previouslyFocusedElement) {
+                    previouslyFocusedElement.focus();
+                }
+            };
+
+            const handleKeyDown = (event) => {
+                if (!modalOverlay.classList.contains('active')) {
+                    return;
+                }
+
+                if (event.key === 'Escape') {
+                    closeModal();
+                    return;
+                }
+
+                if (event.key === 'Tab') {
+                    if (event.shiftKey) { // Shift + Tab
+                        if (document.activeElement === firstFocusableElement) {
+                            lastFocusableElement.focus();
+                            event.preventDefault();
+                        }
+                    } else { // Tab
+                        if (document.activeElement === lastFocusableElement) {
+                            firstFocusableElement.focus();
+                            event.preventDefault();
+                        }
+                    }
+                }
+            };
+
+            // Event listener to open the modal
+            openModalBtn.addEventListener('click', openModal);
+
+            // Event listeners to close the modal
+            closeButtons.forEach(button => {
+                button.addEventListener('click', closeModal);
+            });
+
+            // Close modal by clicking on the overlay
+            modalOverlay.addEventListener('click', (event) => {
+                // Check if the click is on the overlay itself and not on its children
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // Close modal with the Escape key and trap focus
+            document.addEventListener('keydown', handleKeyDown);
+        });
+    </script>
+
+</body>
+</html>

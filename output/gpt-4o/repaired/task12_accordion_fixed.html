@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .faq-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .faq-question {
+            padding: 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .faq-question:hover {
+            background-color: #e2e2e2;
+        }
+        .faq-answer {
+            padding: 15px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer1" id="question1">What is HTML?</button>
+            <div id="answer1" class="faq-answer" role="region" aria-labelledby="question1" aria-hidden="true">Answer to question 1</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer2" id="question2">What is CSS?</button>
+            <div id="answer2" class="faq-answer" role="region" aria-labelledby="question2" aria-hidden="true">Answer to question 2</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="answer3" id="question3">What is JavaScript?</button>
+            <div id="answer3" class="faq-answer" role="region" aria-labelledby="question3" aria-hidden="true">Answer to question 3</div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+
+                question.addEventListener('click', () => {
+                    const isExpanded = question.getAttribute('aria-expanded') === 'true';
+                    question.setAttribute('aria-expanded', String(!isExpanded));
+                    answer.setAttribute('aria-hidden', String(isExpanded));
+                    answer.style.display = isExpanded ? 'none' : 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

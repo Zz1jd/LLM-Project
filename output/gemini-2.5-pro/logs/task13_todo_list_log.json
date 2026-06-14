@@ -1,0 +1,62 @@
+{
+  "task": "task13_todo_list",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 4,
+    "a11yErrors": 2,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This textinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #task-input",
+        "[Rule] This form field should be labelled in some way. Use the label element (either with a \"for\" attribute or wrapped around the form field), or \"title\", \"aria-label\" or \"aria-labelledby\" attributes as appropriate. | [Affected Elements] #task-input"
+      ],
+      "security": [
+        "[JS Line 23] Unsafe DOM manipulation: Unsafe call to taskList.insertAdjacentHTML for argument 1 (Variable 'taskHTML' initialized with unsafe value at 20:33). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 3
+  }
+}

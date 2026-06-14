@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+        }
+        
+        .player-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #0f3460;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(15, 52, 96, 0.9);
+            gap: 15px;
+        }
+        
+        .control-btn {
+            background-color: #e94560;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+        
+        .control-btn:hover {
+            background-color: #ff6b81;
+            transform: scale(1.05);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        
+        .volume-slider {
+            flex-grow: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e94560;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .volume-slider::-webkit-slider-thumb:hover {
+            background: #ff6b81;
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e94560;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .player-title {
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.5rem;
+            background-color: rgba(15, 52, 96, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instructions {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background-color: rgba(15, 52, 96, 0.5);
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                padding: 12px 15px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+            
+            .player-title {
+                font-size: 1.2rem;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <h1 class="player-title">Custom Video Player</h1>
+        
+        <div class="video-container">
+            <video id="videoPlayer">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="playPauseBtn">
+                <span id="playIcon">▶</span>
+            </button>
+            
+            <div class="volume-container">
+                <button class="control-btn" id="muteBtn">
+                    <span id="muteIcon">🔊</span>
+                </button>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+        
+        <div class="instructions">
+            Custom video player with play/pause, mute, and volume controls. Click the play button to start.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const video = document.getElementById('videoPlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playIcon = document.getElementById('playIcon');
+            const muteBtn = document.getElementById('muteBtn');
+            const muteIcon = document.getElementById('muteIcon');
+            const volumeSlider = document.getElementById('volumeSlider');
+            
+            // Play/Pause functionality
+            playPauseBtn.addEventListener('click', function() {
+                if (video.paused) {
+                    video.play();
+                    playIcon.textContent = '⏸';
+                } else {
+                    video.pause();
+                    playIcon.textContent = '▶';
+                }
+            });
+            
+            // Update play button when video ends
+            video.addEventListener('ended', function() {
+                playIcon.textContent = '▶';
+            });
+            
+            // Mute functionality
+            muteBtn.addEventListener('click', function() {
+                video.muted = !video.muted;
+                
+                if (video.muted) {
+                    muteIcon.textContent = '🔇';
+                    volumeSlider.value = 0;
+                } else {
+                    muteIcon.textContent = '🔊';
+                    volumeSlider.value = video.volume;
+                }
+            });
+            
+            // Volume slider functionality
+            volumeSlider.addEventListener('input', function() {
+                video.volume = volumeSlider.value;
+                
+                // Update mute button based on volume level
+                if (video.volume === 0) {
+                    video.muted = true;
+                    muteIcon.textContent = '🔇';
+                } else {
+                    video.muted = false;
+                    muteIcon.textContent = '🔊';
+                }
+            });
+            
+            // Sync volume slider with video volume changes
+            video.addEventListener('volumechange', function() {
+                if (!video.muted) {
+                    volumeSlider.value = video.volume;
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(event) {
+                // Spacebar for play/pause
+                if (event.code === 'Space' && document.activeElement !== volumeSlider) {
+                    event.preventDefault();
+                    playPauseBtn.click();
+                }
+                
+                // M key for mute
+                if (event.code === 'KeyM') {
+                    event.preventDefault();
+                    muteBtn.click();
+                }
+                
+                // Up arrow for volume up
+                if (event.code === 'ArrowUp') {
+                    event.preventDefault();
+                    let newVolume = Math.min(1, video.volume + 0.1);
+                    video.volume = newVolume;
+                    volumeSlider.value = newVolume;
+                    if (video.muted && newVolume > 0) {
+                        video.muted = false;
+                        muteIcon.textContent = '🔊';
+                    }
+                }
+                
+                // Down arrow for volume down
+                if (event.code === 'ArrowDown') {
+                    event.preventDefault();
+                    let newVolume = Math.max(0, video.volume - 0.1);
+                    video.volume = newVolume;
+                    volumeSlider.value = newVolume;
+                    if (newVolume === 0) {
+                        video.muted = true;
+                        muteIcon.textContent = '🔇';
+                    }
+                }
+            });
+            
+            // Initialize volume slider position
+            volumeSlider.value = video.volume;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Write a single HTML file with vanilla JavaScript and CSS for a Tabs component.
+1. 3 tabs (Profile, Settings, Messages).
+2. Clicking a tab changes the content area below it.
+3. Load the tab content dynamically using innerHTML.
+Use basic divs for the tabs without any ARIA roles.

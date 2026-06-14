@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            cursor: pointer;
+            background-color: #f4f4f4;
+        }
+        th:hover {
+            background-color: #e0e0e0;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Data Table</h1>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th data-column="name" data-order="asc">Name</th>
+                <th data-column="email" data-order="asc">Email</th>
+                <th data-column="role" data-order="asc">Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Doe</td>
+                <td>john.doe@example.com</td>
+                <td>Admin</td>
+            </tr>
+            <tr>
+                <td>Jane Smith</td>
+                <td>jane.smith@example.com</td>
+                <td>User</td>
+            </tr>
+            <tr>
+                <td>Emily Johnson</td>
+                <td>emily.johnson@example.com</td>
+                <td>Moderator</td>
+            </tr>
+            <tr>
+                <td>Michael Brown</td>
+                <td>michael.brown@example.com</td>
+                <td>User</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const table = document.getElementById('userTable');
+            const headers = table.querySelectorAll('th');
+            const tbody = table.querySelector('tbody');
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-column');
+                    const order = header.getAttribute('data-order');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                    const sortedRows = rows.sort((a, b) => {
+                        const aText = a.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim().toLowerCase();
+                        const bText = b.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim().toLowerCase();
+
+                        if (aText < bText) return order === 'asc' ? -1 : 1;
+                        if (aText > bText) return order === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+
+                    tbody.innerHTML = '';
+                    sortedRows.forEach(row => tbody.appendChild(row));
+
+                    header.setAttribute('data-order', order === 'asc' ? 'desc' : 'asc');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

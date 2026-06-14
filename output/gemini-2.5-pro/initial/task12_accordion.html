@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f4f7f6;
+            --text-color: #333;
+            --border-color: #ddd;
+            --white-color: #fff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .faq-container {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--white-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .faq-header {
+            padding: 25px 30px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            text-align: center;
+        }
+
+        .faq-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: 20px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background-color: #f9f9f9;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--primary-color);
+            transition: transform 0.3s ease-in-out;
+            margin-left: 15px;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+            background-color: #fafafa;
+        }
+        
+        .faq-answer-content {
+            padding: 0 30px 20px;
+            line-height: 1.6;
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" data-answer="<p>Our platform is designed for developers, designers, and project managers who want to streamline their workflow. It's perfect for both individuals and teams of any size looking to improve collaboration and productivity.</p>">
+                Who is this platform for?
+            </button>
+            <div class="faq-answer"></div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" data-answer="<p>Yes, we offer a 14-day free trial with full access to all our premium features. No credit card is required to get started. You can explore the platform and see if it's the right fit for you and your team.</p>">
+                Is there a free trial available?
+            </button>
+            <div class="faq-answer"></div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" data-answer="<p>You can cancel your subscription at any time from your account settings. The cancellation will be effective at the end of your current billing cycle, and you won't be charged again. You will retain access to your account until the cycle ends.</p>">
+                How can I cancel my subscription?
+            </button>
+            <div class="faq-answer"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const questions = document.querySelectorAll('.faq-question');
+
+            questions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answerPanel = question.nextElementSibling;
+                    const wasActive = question.classList.contains('active');
+
+                    // Optional: Close all other accordions
+                    // questions.forEach(q => {
+                    //     if (q !== question) {
+                    //         q.classList.remove('active');
+                    //         q.nextElementSibling.style.maxHeight = null;
+                    //     }
+                    // });
+
+                    // Toggle the clicked accordion
+                    question.classList.toggle('active');
+
+                    // Inject content only on the first time it's opened
+                    if (question.classList.contains('active') && answerPanel.innerHTML.trim() === '') {
+                        const answerContent = question.dataset.answer;
+                        const contentWrapper = `<div class="faq-answer-content">${answerContent}</div>`;
+                        answerPanel.insertAdjacentHTML('afterbegin', contentWrapper);
+                    }
+
+                    // Set max-height for smooth transition
+                    if (question.classList.contains('active')) {
+                        answerPanel.style.maxHeight = answerPanel.scrollHeight + 'px';
+                    } else {
+                        answerPanel.style.maxHeight = null;
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

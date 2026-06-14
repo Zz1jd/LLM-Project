@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Star Rating Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .rating-container {
+            display: flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .star {
+            font-size: 2rem;
+            color: #ccc;
+            transition: color 0.2s ease;
+        }
+        .star.highlighted {
+            color: #f5c518;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="rating-container" id="ratingContainer">
+        <span class="star" data-value="1">★</span>
+        <span class="star" data-value="2">★</span>
+        <span class="star" data-value="3">★</span>
+        <span class="star" data-value="4">★</span>
+        <span class="star" data-value="5">★</span>
+    </div>
+    <div class="message" id="ratingMessage"></div>
+
+    <script>
+        const ratingContainer = document.getElementById('ratingContainer');
+        const stars = document.querySelectorAll('.star');
+        const message = document.getElementById('ratingMessage');
+        let lockedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => {
+                if (lockedRating === 0) {
+                    highlightStars(star.dataset.value);
+                }
+            });
+
+            star.addEventListener('mouseout', () => {
+                if (lockedRating === 0) {
+                    clearHighlights();
+                }
+            });
+
+            star.addEventListener('click', () => {
+                lockedRating = star.dataset.value;
+                highlightStars(lockedRating);
+                message.innerHTML = `You rated this ${lockedRating} stars!`;
+            });
+        });
+
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                star.classList.toggle('highlighted', star.dataset.value <= rating);
+            });
+        }
+
+        function clearHighlights() {
+            stars.forEach(star => {
+                star.classList.remove('highlighted');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        #search-input:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+        
+        #suggestions-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            margin-top: 5px;
+            list-style: none;
+        }
+        
+        .suggestion-item {
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+            margin: 0;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover,
+        .suggestion-item:focus {
+            background-color: #f5f7ff;
+            outline: 2px solid #4a6cf7;
+            outline-offset: -2px;
+        }
+        
+        .highlight {
+            color: #4a6cf7;
+            font-weight: 600;
+        }
+        
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search with Autocomplete</h1>
+        
+        <div class="search-container">
+            <label for="search-input" class="visually-hidden">Search with autocomplete suggestions</label>
+            <input type="text" id="search-input" placeholder="Type to search..." aria-label="Search input with autocomplete suggestions" aria-expanded="false" aria-controls="suggestions-container" aria-autocomplete="list">
+            <ul id="suggestions-container" role="listbox" aria-label="Search suggestions"></ul>
+        </div>
+        
+        <div class="instructions">
+            <p>Start typing to see autocomplete suggestions. Suggestions are generated based on your input.</p>
+        </div>
+    </div>
+
+    <script>
+        // Fake data for autocomplete suggestions
+        const fakeData = [
+            "JavaScript Tutorial",
+            "HTML5 Basics",
+            "CSS3 Styling",
+            "React Framework",
+            "Vue.js Introduction",
+            "Angular Development",
+            "Node.js Backend",
+            "Python Programming",
+            "Java Development",
+            "C# .NET Core",
+            "Web Design Principles",
+            "Responsive Layout",
+            "Mobile First Design",
+            "API Integration",
+            "Database Management",
+            "Cloud Computing",
+            "Machine Learning",
+            "Data Science",
+            "Artificial Intelligence",
+            "Cybersecurity Basics",
+            "Git Version Control",
+            "DevOps Practices",
+            "UI/UX Design",
+            "Frontend Development",
+            "Backend Development",
+            "Full Stack Course",
+            "Software Engineering",
+            "Agile Methodology",
+            "Project Management",
+            "Technical Interview"
+        ];
+        
+        const searchInput = document.getElementById('search-input');
+        const suggestionsContainer = document.getElementById('suggestions-container');
+        let currentFocus = -1;
+        
+        // Function to generate fake suggestions based on input
+        function generateSuggestions(searchTerm) {
+            if (!searchTerm.trim()) {
+                return [];
+            }
+            
+            const term = searchTerm.toLowerCase();
+            return fakeData.filter(item => 
+                item.toLowerCase().includes(term)
+            ).slice(0, 8); // Limit to 8 suggestions
+        }
+        
+        // Function to highlight matching text in suggestions
+        function highlightMatch(text, searchTerm) {
+            if (!searchTerm.trim()) return document.createTextNode(text);
+            
+            const fragment = document.createDocumentFragment();
+            const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapedSearchTerm})`, 'gi');
+            let lastIndex = 0;
+            let match;
+            
+            while ((match = regex.exec(text)) !== null) {
+                if (match.index > lastIndex) {
+                    fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+                }
+                
+                const highlightSpan = document.createElement('span');
+                highlightSpan.className = 'highlight';
+                highlightSpan.textContent = match[0];
+                fragment.appendChild(highlightSpan);
+                
+                lastIndex = match.index + match[0].length;
+            }
+            
+            if (lastIndex < text.length) {
+                fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+            }
+            
+            return fragment;
+        }
+        
+        // Function to display suggestions
+        function showSuggestions(suggestions, searchTerm) {
+            while (suggestionsContainer.firstChild) {
+                suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+            }
+            currentFocus = -1;
+            
+            if (suggestions.length === 0) {
+                const noResults = document.createElement('li');
+                noResults.className = 'no-results';
+                noResults.textContent = 'No matching results found';
+                noResults.setAttribute('role', 'option');
+                noResults.setAttribute('aria-selected', 'false');
+                suggestionsContainer.appendChild(noResults);
+                suggestionsContainer.style.display = 'block';
+                searchInput.setAttribute('aria-expanded', 'true');
+                return;
+            }
+            
+            suggestions.forEach((suggestion, index) => {
+                const suggestionItem = document.createElement('li');
+                suggestionItem.className = 'suggestion-item';
+                suggestionItem.setAttribute('role', 'option');
+                suggestionItem.setAttribute('id', `suggestion-${index}`);
+                suggestionItem.setAttribute('tabindex', '-1');
+                suggestionItem.setAttribute('aria-selected', 'false');
+                
+                suggestionItem.appendChild(highlightMatch(suggestion, searchTerm));
+                
+                suggestionItem.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    suggestionsContainer.style.display = 'none';
+                    currentFocus = -1;
+                    searchInput.setAttribute('aria-expanded', 'false');
+                });
+                
+                suggestionItem.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        searchInput.value = suggestion;
+                        suggestionsContainer.style.display = 'none';
+                        currentFocus = -1;
+                        searchInput.setAttribute('aria-expanded', 'false');
+                        searchInput.focus();
+                    }
+                });
+                
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+            
+            suggestionsContainer.style.display = 'block';
+            searchInput.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Event listener for input
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value;
+            
+            if (searchTerm.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                currentFocus = -1;
+                searchInput.setAttribute('aria-expanded', 'false');
+                return;
+            }
+            
+            const suggestions = generateSuggestions(searchTerm);
+            showSuggestions(suggestions, searchTerm);
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+                suggestionsContainer.style.display = 'none';
+                currentFocus = -1;
+                searchInput.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        // Keyboard navigation for suggestions
+        searchInput.addEventListener('keydown', function(event) {
+            const visibleSuggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+            
+            if (visibleSuggestions.length === 0) return;
+            
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                currentFocus = (currentFocus + 1) % visibleSuggestions.length;
+                visibleSuggestions[currentFocus].focus();
+                visibleSuggestions[currentFocus].setAttribute('aria-selected', 'true');
+                if (currentFocus > 0) {
+                    visibleSuggestions[currentFocus - 1].setAttribute('aria-selected', 'false');
+                } else {
+                    visibleSuggestions[visibleSuggestions.length - 1].setAttribute('aria-selected', 'false');
+                }
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                currentFocus = currentFocus <= 0 ? visibleSuggestions.length - 1 : currentFocus - 1;
+                visibleSuggestions[currentFocus].focus();
+                visibleSuggestions[currentFocus].setAttribute('aria-selected', 'true');
+                if (currentFocus < visibleSuggestions.length - 1) {
+                    visibleSuggestions[currentFocus + 1].setAttribute('aria-selected', 'false');
+                } else {
+                    visibleSuggestions[0].setAttribute('aria-selected', 'false');
+                }
+            } else if (event.key === 'Escape') {
+                suggestionsContainer.style.display = 'none';
+                currentFocus = -1;
+                searchInput.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        // Add focus event to show suggestions when input is focused with text
+        searchInput.addEventListener('focus', function() {
+            if (this.value.length > 0) {
+                const suggestions = generateSuggestions(this.value);
+                showSuggestions(suggestions, this.value);
+            }
+        });
+    </script>
+</body>
+</html>

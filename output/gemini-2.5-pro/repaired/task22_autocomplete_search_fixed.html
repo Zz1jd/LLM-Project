@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search Bar</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 50px;
+            color: #333;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #searchInput:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #ddd;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-items div {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .autocomplete-items div:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        .autocomplete-active {
+            background-color: #007bff !important;
+            color: #ffffff;
+        }
+        
+        #results-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            min-height: 24px;
+            font-size: 16px;
+            color: #555;
+            word-wrap: break-word;
+        }
+        
+        #results-display strong {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container" role="search">
+        <label for="searchInput" class="visually-hidden">Search for fruits</label>
+        <input type="text" id="searchInput" placeholder="Search for fruits..." aria-label="Search for fruits" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="autocomplete-list">
+        <div id="autocomplete-list" class="autocomplete-items" role="listbox"></div>
+        <div id="search-status" class="visually-hidden" role="status" aria-live="polite"></div>
+        <div id="results-display" aria-live="polite"></div>
+    </div>
+
+    <script>
+        const mockData = [
+            "Apple", "Apricot", "Avocado", "Banana", "Blackberry", "Blueberry",
+            "Cherry", "Clementine", "Coconut", "Cranberry", "Date", "Dragonfruit",
+            "Durian", "Elderberry", "Fig", "Grape", "Grapefruit", "Guava",
+            "Honeydew", "Jackfruit", "Kiwi", "Kumquat", "Lemon", "Lime",
+            "Lychee", "Mango", "Melon", "Nectarine", "Orange", "Papaya",
+            "Passionfruit", "Peach", "Pear", "Persimmon", "Pineapple", "Plum",
+            "Pomegranate", "Raspberry", "Strawberry", "Tangerine", "Watermelon"
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteList = document.getElementById('autocomplete-list');
+        const resultsDisplay = document.getElementById('results-display');
+        const searchStatus = document.getElementById('search-status');
+        let currentFocus = -1;
+
+        function clearAutocomplete() {
+            autocompleteList.replaceChildren();
+            searchInput.setAttribute('aria-expanded', 'false');
+            searchInput.removeAttribute('aria-activedescendant');
+            searchStatus.textContent = '';
+            currentFocus = -1;
+        }
+
+        function selectItem(itemText) {
+            searchInput.value = itemText;
+            
+            resultsDisplay.replaceChildren();
+            const selectedText = document.createTextNode('Selected: ');
+            const strongSelected = document.createElement('strong');
+            strongSelected.textContent = itemText;
+            resultsDisplay.append(selectedText, strongSelected);
+
+            clearAutocomplete();
+        }
+
+        function removeActive(items) {
+            for (let i = 0; i < items.length; i++) {
+                items[i].classList.remove('autocomplete-active');
+            }
+        }
+
+        function addActive(items) {
+            if (!items || items.length === 0) return;
+            removeActive(items);
+            if (currentFocus >= items.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = items.length - 1;
+            
+            items[currentFocus].classList.add('autocomplete-active');
+            searchInput.setAttribute('aria-activedescendant', items[currentFocus].id);
+        }
+
+        searchInput.addEventListener('input', function() {
+            const inputValue = this.value;
+            clearAutocomplete();
+            
+            if (!inputValue) {
+                resultsDisplay.replaceChildren();
+                return;
+            }
+
+            resultsDisplay.replaceChildren();
+            const resultsText = document.createTextNode('Results for: ');
+            const strongEl = document.createElement('strong');
+            strongEl.textContent = inputValue;
+            resultsDisplay.append(resultsText, strongEl);
+
+            const suggestions = mockData.filter(item =>
+                item.toLowerCase().startsWith(inputValue.toLowerCase())
+            );
+
+            if (suggestions.length > 0) {
+                searchInput.setAttribute('aria-expanded', 'true');
+                suggestions.forEach((item, index) => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.id = `suggestion-item-${index}`;
+                    suggestionItem.setAttribute('role', 'option');
+                    suggestionItem.dataset.value = item;
+
+                    const strongPart = document.createElement('strong');
+                    strongPart.textContent = item.substring(0, inputValue.length);
+                    const restPart = document.createTextNode(item.substring(inputValue.length));
+                    suggestionItem.append(strongPart, restPart);
+                    
+                    autocompleteList.appendChild(suggestionItem);
+                });
+                searchStatus.textContent = `${suggestions.length} suggestion${suggestions.length !== 1 ? 's' : ''} available.`;
+            } else {
+                searchInput.setAttribute('aria-expanded', 'false');
+                searchStatus.textContent = 'No suggestions found.';
+            }
+        });
+
+        autocompleteList.addEventListener('click', function(e) {
+            const suggestionItem = e.target.closest('div[role="option"]');
+            if (suggestionItem && suggestionItem.dataset.value) {
+                selectItem(suggestionItem.dataset.value);
+            }
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            const items = autocompleteList.getElementsByTagName('div');
+            if (items.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentFocus++;
+                addActive(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentFocus--;
+                addActive(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentFocus > -1 && items[currentFocus] && items[currentFocus].dataset.value) {
+                    selectItem(items[currentFocus].dataset.value);
+                }
+            } else if (e.key === 'Escape') {
+                clearAutocomplete();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target !== searchInput) {
+                clearAutocomplete();
+            }
+        });
+    </script>
+
+</body>
+</html>

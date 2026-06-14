@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search Bar</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 50px;
+            color: #333;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #searchInput:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #ddd;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-items div {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .autocomplete-items div:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        .autocomplete-active {
+            background-color: #007bff !important;
+            color: #ffffff;
+        }
+        
+        #results-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            min-height: 24px;
+            font-size: 16px;
+            color: #555;
+            word-wrap: break-word;
+        }
+        
+        #results-display strong {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for fruits...">
+        <div id="autocomplete-list" class="autocomplete-items"></div>
+        <div id="results-display"></div>
+    </div>
+
+    <script>
+        // Mock data for search suggestions
+        const mockData = [
+            "Apple", "Apricot", "Avocado", "Banana", "Blackberry", "Blueberry",
+            "Cherry", "Clementine", "Coconut", "Cranberry", "Date", "Dragonfruit",
+            "Durian", "Elderberry", "Fig", "Grape", "Grapefruit", "Guava",
+            "Honeydew", "Jackfruit", "Kiwi", "Kumquat", "Lemon", "Lime",
+            "Lychee", "Mango", "Melon", "Nectarine", "Orange", "Papaya",
+            "Passionfruit", "Peach", "Pear", "Persimmon", "Pineapple", "Plum",
+            "Pomegranate", "Raspberry", "Strawberry", "Tangerine", "Watermelon"
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteList = document.getElementById('autocomplete-list');
+        const resultsDisplay = document.getElementById('results-display');
+
+        searchInput.addEventListener('input', function() {
+            const inputValue = this.value;
+
+            // Clear previous suggestions and results
+            autocompleteList.innerHTML = '';
+            
+            if (!inputValue) {
+                resultsDisplay.innerHTML = '';
+                return;
+            }
+
+            // Update the results display dynamically
+            resultsDisplay.innerHTML = `Results for: <strong>${escapeHTML(inputValue)}</strong>`;
+
+            // Filter mock data based on input
+            const suggestions = mockData.filter(item =>
+                item.toLowerCase().startsWith(inputValue.toLowerCase())
+            );
+
+            // Display suggestions
+            if (suggestions.length > 0) {
+                suggestions.forEach(item => {
+                    const suggestionItem = document.createElement('div');
+                    // Highlight the matching part of the suggestion
+                    suggestionItem.innerHTML = `<strong>${item.substr(0, inputValue.length)}</strong>${item.substr(inputValue.length)}`;
+                    
+                    suggestionItem.addEventListener('click', function() {
+                        // Set input value to the selected suggestion
+                        searchInput.value = item;
+                        // Update results display
+                        resultsDisplay.innerHTML = `Selected: <strong>${escapeHTML(item)}</strong>`;
+                        // Clear the autocomplete list
+                        autocompleteList.innerHTML = '';
+                    });
+                    autocompleteList.appendChild(suggestionItem);
+                });
+            }
+        });
+
+        // Close the autocomplete list when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target !== searchInput) {
+                autocompleteList.innerHTML = '';
+            }
+        });
+        
+        // Utility function to escape HTML to prevent XSS
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            border: 1px solid #ccc;
+            border-top: none;
+            background: #fff;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <label for="search-input" class="visually-hidden">Search</label>
+        <input type="text" id="search-input" class="search-input" placeholder="Search..." aria-label="Search" aria-controls="suggestions-list">
+        <div class="suggestions" role="listbox" id="suggestions-list" aria-live="polite"></div>
+    </div>
+
+    <script>
+        const suggestionsData = [
+            "Apple", "Banana", "Cherry", "Date", "Elderberry", 
+            "Fig", "Grape", "Honeydew", "Kiwi", "Lemon", 
+            "Mango", "Nectarine", "Orange", "Papaya", "Quince"
+        ];
+
+        const searchInput = document.getElementById('search-input');
+        const suggestionsContainer = document.getElementById('suggestions-list');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            const filteredSuggestions = suggestionsData.filter(item => 
+                item.toLowerCase().includes(query)
+            );
+
+            while (suggestionsContainer.firstChild) {
+                suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+            }
+
+            if (query === '' || filteredSuggestions.length === 0) {
+                return;
+            }
+
+            filteredSuggestions.forEach(item => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.className = 'suggestion-item';
+                suggestionItem.textContent = item;
+                suggestionItem.setAttribute('role', 'option');
+                suggestionItem.tabIndex = 0;
+                suggestionItem.addEventListener('click', () => {
+                    searchInput.value = item;
+                    while (suggestionsContainer.firstChild) {
+                        suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+                    }
+                });
+                suggestionItem.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        searchInput.value = item;
+                        while (suggestionsContainer.firstChild) {
+                            suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+                        }
+                    }
+                });
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.search-container')) {
+                while (suggestionsContainer.firstChild) {
+                    suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

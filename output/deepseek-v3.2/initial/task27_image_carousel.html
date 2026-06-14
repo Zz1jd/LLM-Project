@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .carousel-container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+        
+        .slides-container {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2c3e50;
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .nav-btn.prev {
+            left: 20px;
+        }
+        
+        .nav-btn.next {
+            right: 20px;
+        }
+        
+        .dots-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.2);
+        }
+        
+        .dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        .slide-info {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            font-size: 18px;
+        }
+        
+        @media (max-width: 768px) {
+            .carousel {
+                height: 400px;
+            }
+            
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .carousel {
+                height: 300px;
+            }
+            
+            .nav-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            
+            .slide-info {
+                font-size: 16px;
+                bottom: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="slides-container">
+                <!-- Slides will be inserted by JavaScript -->
+            </div>
+            
+            <button class="nav-btn prev" aria-label="Previous slide">&#10094;</button>
+            <button class="nav-btn next" aria-label="Next slide">&#10095;</button>
+            
+            <div class="dots-container">
+                <!-- Dots will be inserted by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image data - you can replace these with your own images
+            const images = [
+                {
+                    url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                    alt: 'Mountain landscape',
+                    title: 'Beautiful Mountain Landscape'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba',
+                    alt: 'Northern lights',
+                    title: 'Aurora Borealis'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b',
+                    alt: 'Beach sunset',
+                    title: 'Tropical Beach Sunset'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000',
+                    alt: 'Lake reflection',
+                    title: 'Calm Lake Reflection'
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1',
+                    alt: 'Ocean waves',
+                    title: 'Powerful Ocean Waves'
+                }
+            ];
+            
+            const carousel = document.querySelector('.carousel');
+            const slidesContainer = document.querySelector('.slides-container');
+            const dotsContainer = document.querySelector('.dots-container');
+            const prevBtn = document.querySelector('.prev');
+            const nextBtn = document.querySelector('.next');
+            
+            let currentSlide = 0;
+            let slideInterval;
+            
+            // Initialize the carousel
+            function initCarousel() {
+                // Create slides
+                images.forEach((image, index) => {
+                    // Create slide element
+                    const slide = document.createElement('div');
+                    slide.className = 'slide';
+                    slide.setAttribute('data-index', index);
+                    
+                    const img = document.createElement('img');
+                    img.src = image.url;
+                    img.alt = image.alt;
+                    
+                    const info = document.createElement('div');
+                    info.className = 'slide-info';
+                    info.textContent = image.title;
+                    
+                    slide.appendChild(img);
+                    slide.appendChild(info);
+                    slidesContainer.appendChild(slide);
+                    
+                    // Create dot indicator
+                    const dot = document.createElement('button');
+                    dot.className = 'dot';
+                    if (index === 0) dot.classList.add('active');
+                    dot.setAttribute('data-index', index);
+                    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                    dotsContainer.appendChild(dot);
+                });
+                
+                // Set up event listeners
+                prevBtn.addEventListener('click', goToPrevSlide);
+                nextBtn.addEventListener('click', goToNextSlide);
+                
+                // Add click events to dots
+                document.querySelectorAll('.dot').forEach(dot => {
+                    dot.addEventListener('click', function() {
+                        const slideIndex = parseInt(this.getAttribute('data-index'));
+                        goToSlide(slideIndex);
+                    });
+                });
+                
+                // Start auto-advance
+                startAutoSlide();
+                
+                // Pause auto-advance on hover
+                carousel.addEventListener('mouseenter', pauseAutoSlide);
+                carousel.addEventListener('mouseleave', startAutoSlide);
+            }
+            
+            // Go to a specific slide
+            function goToSlide(slideIndex) {
+                // Update current slide
+                currentSlide = slideIndex;
+                
+                // Update slide position
+                slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update active dot
+                document.querySelectorAll('.dot').forEach((dot, index) => {
+                    if (index === currentSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+                
+                // Reset auto-slide timer
+                resetAutoSlide();
+            }
+            
+            // Go to the next slide
+            function goToNextSlide() {
+                currentSlide = (currentSlide + 1) % images.length;
+                goToSlide(currentSlide);
+            }
+            
+            // Go to the previous slide
+            function goToPrevSlide() {
+                currentSlide = (currentSlide - 1 + images.length) % images.length;
+                goToSlide(currentSlide);
+            }
+            
+            // Start auto-sliding
+            function startAutoSlide() {
+                slideInterval = setInterval(goToNextSlide, 5000);
+            }
+            
+            // Pause auto-sliding
+            function pauseAutoSlide() {
+                clearInterval(slideInterval);
+            }
+            
+            // Reset auto-slide timer
+            function resetAutoSlide() {
+                pauseAutoSlide();
+                startAutoSlide();
+            }
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    goToPrevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    goToNextSlide();
+                }
+            });
+            
+            // Initialize the carousel
+            initCarousel();
+        });
+    </script>
+</body>
+</html>

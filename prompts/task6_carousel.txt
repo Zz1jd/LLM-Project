@@ -1,0 +1,5 @@
+Write a single HTML file with vanilla JavaScript and CSS for an image carousel.
+1. Display one main image at a time.
+2. Next and Previous buttons using only arrow symbols (←, →).
+3. A function to load image captions dynamically via innerHTML based on the current image.
+Ensure smooth transitions.

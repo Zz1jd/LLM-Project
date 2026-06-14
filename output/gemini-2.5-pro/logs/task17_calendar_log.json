@@ -1,0 +1,66 @@
+{
+  "task": "task17_calendar",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 19,
+    "a11yErrors": 13,
+    "secErrors": 6,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 1.61:1. Recommendation:  change text colour to #767676. | [Affected Elements] #calendar-days > div:nth-child(1), #calendar-days > div:nth-child(2), #calendar-days > div:nth-child(3) (+9 more)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change text colour to #0072ed. | [Affected Elements] #selected-date-display"
+      ],
+      "security": [
+        "[JS Line 15] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 27] Unsafe DOM manipulation: Unsafe assignment to innerHTML (Variable 'daysInPrevMonth' initialized with unsafe value at 21:40). Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 36] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 51] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 80] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 2
+  }
+}

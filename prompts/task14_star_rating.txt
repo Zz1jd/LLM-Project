@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a 5-star rating component.
+1. 5 star icons (use ★ characters).
+2. Hovering over stars highlights them.
+3. Clicking a star locks the rating and displays "You rated this [X] stars!" using innerHTML.

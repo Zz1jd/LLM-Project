@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --background-color: #f4f7f6;
+            --form-background: #ffffff;
+            --text-color: #333;
+            --input-border-color: #ccc;
+            --input-focus-border-color: #007bff;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: var(--form-background);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--input-focus-border-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover-color);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 14px;
+            min-height: 21px; /* Reserve space to prevent layout shift */
+        }
+
+        .message-success {
+            color: var(--success-color);
+        }
+
+        .message-error {
+            color: var(--error-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>Welcome Back</h1>
+        <form id="loginForm" novalidate>
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const messageContainer = document.getElementById('message');
+
+            loginForm.addEventListener('submit', function(event) {
+                // Prevent the default form submission which reloads the page
+                event.preventDefault();
+
+                // Reset previous messages
+                messageContainer.innerHTML = '';
+                messageContainer.className = '';
+
+                // Get trimmed values from inputs
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                // Basic validation
+                if (email === '' || password === '') {
+                    messageContainer.className = 'message-error';
+                    messageContainer.innerHTML = 'Please fill in both fields.';
+                    return;
+                }
+
+                // Simple email format validation
+                if (!validateEmail(email)) {
+                    messageContainer.className = 'message-error';
+                    messageContainer.innerHTML = 'Please enter a valid email address.';
+                    return;
+                }
+
+                // If validation passes
+                messageContainer.className = 'message-success';
+                // Using innerHTML as requested to display the welcome message
+                messageContainer.innerHTML = `Welcome, ${email}`;
+                
+                // Optional: Clear form fields after successful "login"
+                // loginForm.reset();
+            });
+
+            function validateEmail(email) {
+                // A simple regex for email validation
+                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+        });
+    </script>
+
+</body>
+</html>

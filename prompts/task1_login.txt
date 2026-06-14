@@ -1,0 +1,8 @@
+Write a single HTML file with vanilla JavaScript and CSS for a login form. 
+It must include:
+1. An email input field.
+2. A password input field.
+3. A submit button.
+4. Basic form validation.
+5. When the user clicks submit, display a welcome message below the form that says "Welcome, [email address]". You must use `document.getElementById('message').innerHTML` to display this message dynamically.
+Please make the UI look modern and clean.

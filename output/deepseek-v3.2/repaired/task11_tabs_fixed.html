@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabs Component</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .tabs-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 18px 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            user-select: none;
+        }
+        
+        .tab:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .tab.active {
+            color: #4361ee;
+            border-bottom: 3px solid #4361ee;
+            background-color: white;
+        }
+        
+        .tab-content-container {
+            padding: 30px;
+            min-height: 300px;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-content h2 {
+            color: #343a40;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .tab-content p {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .profile-details h3 {
+            color: #343a40;
+            margin-bottom: 5px;
+        }
+        
+        .profile-details p {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .settings-option {
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-option h3 {
+            color: #343a40;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .settings-option p {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4361ee;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .message {
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .message:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            color: #343a40;
+        }
+        
+        .message-time {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .message-preview {
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        .unread {
+            border-left: 4px solid #4361ee;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 15px;
+            }
+            
+            .tab-content-container {
+                padding: 20px;
+            }
+            
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs-container">
+        <div class="tabs-header" role="tablist" aria-label="User sections">
+            <button class="tab active" role="tab" aria-selected="true" aria-controls="profile" data-tab="profile" id="profile-tab">Profile</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="settings" data-tab="settings" id="settings-tab">Settings</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="messages" data-tab="messages" id="messages-tab">Messages</button>
+        </div>
+        
+        <div class="tab-content-container">
+            <div class="tab-content active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="tab-content" id="settings" role="tabpanel" aria-labelledby="settings-tab" hidden>
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="tab-content" id="messages" role="tabpanel" aria-labelledby="messages-tab" hidden>
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab elements
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Content data for each tab
+            const tabContentData = {
+                profile: {
+                    title: "User Profile",
+                    paragraphs: [
+                        "This is your personal profile page. Here you can view and manage your account information.",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    ],
+                    profile: {
+                        avatar: "JD",
+                        name: "John Doe",
+                        role: "Software Developer",
+                        location: "San Francisco, CA",
+                        joined: "Joined: January 2023"
+                    }
+                },
+                
+                settings: {
+                    title: "Account Settings",
+                    paragraphs: [
+                        "Manage your account preferences and privacy settings.",
+                        "All changes are saved automatically. You can revert any setting at any time."
+                    ],
+                    options: [
+                        {
+                            title: "Email Notifications",
+                            description: "Receive email updates about your account activity",
+                            checked: true
+                        },
+                        {
+                            title: "Dark Mode",
+                            description: "Switch to dark theme for better visibility at night",
+                            checked: false
+                        },
+                        {
+                            title: "Two-Factor Authentication",
+                            description: "Add an extra layer of security to your account",
+                            checked: true
+                        },
+                        {
+                            title: "Auto-Save Drafts",
+                            description: "Automatically save your work as you type",
+                            checked: false
+                        }
+                    ]
+                },
+                
+                messages: {
+                    title: "Messages",
+                    paragraphs: [
+                        "Your recent conversations and messages.",
+                        "You have 2 unread messages. Click on a message to open the full conversation."
+                    ],
+                    messages: [
+                        {
+                            sender: "Alex Johnson",
+                            time: "10:42 AM",
+                            preview: "Hey, are we still meeting for lunch today? Let me know if the time works for you.",
+                            unread: true
+                        },
+                        {
+                            sender: "Sarah Williams",
+                            time: "Yesterday",
+                            preview: "I've sent you the project files. Please review them when you have a chance.",
+                            unread: false
+                        },
+                        {
+                            sender: "Team Updates",
+                            time: "May 15",
+                            preview: "Monthly team meeting has been rescheduled to Friday at 2 PM. Please update your calendar.",
+                            unread: false
+                        },
+                        {
+                            sender: "Michael Chen",
+                            time: "May 14",
+                            preview: "Thanks for your help with the code review. Your suggestions were really helpful!",
+                            unread: true
+                        }
+                    ]
+                }
+            };
+            
+            // Function to create profile content
+            function createProfileContent(data) {
+                const fragment = document.createDocumentFragment();
+                
+                const h2 = document.createElement('h2');
+                h2.textContent = data.title;
+                fragment.appendChild(h2);
+                
+                data.paragraphs.forEach(text => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    fragment.appendChild(p);
+                });
+                
+                const profileInfo = document.createElement('div');
+                profileInfo.className = 'profile-info';
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = data.profile.avatar;
+                avatar.setAttribute('aria-label', `Avatar for ${data.profile.name}`);
+                profileInfo.appendChild(avatar);
+                
+                const profileDetails = document.createElement('div');
+                profileDetails.className = 'profile-details';
+                
+                const name = document.createElement('h3');
+                name.textContent = data.profile.name;
+                profileDetails.appendChild(name);
+                
+                [data.profile.role, data.profile.location, data.profile.joined].forEach(text => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    profileDetails.appendChild(p);
+                });
+                
+                profileInfo.appendChild(profileDetails);
+                fragment.appendChild(profileInfo);
+                
+                return fragment;
+            }
+            
+            // Function to create settings content
+            function createSettingsContent(data) {
+                const fragment = document.createDocumentFragment();
+                
+                const h2 = document.createElement('h2');
+                h2.textContent = data.title;
+                fragment.appendChild(h2);
+                
+                data.paragraphs.forEach((text, index) => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    if (index === 1) p.style.marginTop = '20px';
+                    fragment.appendChild(p);
+                });
+                
+                data.options.forEach(option => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'settings-option';
+                    
+                    const textDiv = document.createElement('div');
+                    
+                    const h3 = document.createElement('h3');
+                    h3.textContent = option.title;
+                    textDiv.appendChild(h3);
+                    
+                    const p = document.createElement('p');
+                    p.textContent = option.description;
+                    textDiv.appendChild(p);
+                    
+                    optionDiv.appendChild(textDiv);
+                    
+                    const label = document.createElement('label');
+                    label.className = 'toggle-switch';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.checked = option.checked;
+                    input.setAttribute('aria-label', `${option.title} - ${option.description}`);
+                    
+                    const span = document.createElement('span');
+                    span.className = 'toggle-slider';
+                    
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionDiv.appendChild(label);
+                    
+                    fragment.appendChild(optionDiv);
+                });
+                
+                return fragment;
+            }
+            
+            // Function to create messages content
+            function createMessagesContent(data) {
+                const fragment = document.createDocumentFragment();
+                
+                const h2 = document.createElement('h2');
+                h2.textContent = data.title;
+                fragment.appendChild(h2);
+                
+                data.paragraphs.forEach(text => {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    fragment.appendChild(p);
+                });
+                
+                data.messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message';
+                    if (msg.unread) messageDiv.classList.add('unread');
+                    
+                    const header = document.createElement('div');
+                    header.className = 'message-header';
+                    
+                    const sender = document.createElement('div');
+                    sender.className = 'message-sender';
+                    sender.textContent = msg.sender;
+                    header.appendChild(sender);
+                    
+                    const time = document.createElement('div');
+                    time.className = 'message-time';
+                    time.textContent = msg.time;
+                    header.appendChild(time);
+                    
+                    messageDiv.appendChild(header);
+                    
+                    const preview = document.createElement('div');
+                    preview.className = 'message-preview';
+                    preview.textContent = msg.preview;
+                    messageDiv.appendChild(preview);
+                    
+                    fragment.appendChild(messageDiv);
+                });
+                
+                return fragment;
+            }
+            
+            // Initialize with first tab content
+            const profileContent = document.getElementById('profile');
+            profileContent.appendChild(createProfileContent(tabContentData.profile));
+            
+            // Add click event listeners to tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update ARIA attributes
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.hidden = true;
+                    });
+                    
+                    // Activate clicked tab
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    
+                    // Show corresponding content
+                    const contentDiv = document.getElementById(tabId);
+                    contentDiv.hidden = false;
+                    contentDiv.classList.add('active');
+                    
+                    // Load content if not already loaded
+                    if (contentDiv.children.length === 0) {
+                        let contentFragment;
+                        switch(tabId) {
+                            case 'profile':
+                                contentFragment = createProfileContent(tabContentData.profile);
+                                break;
+                            case 'settings':
+                                contentFragment = createSettingsContent(tabContentData.settings);
+                                break;
+                            case 'messages':
+                                contentFragment = createMessagesContent(tabContentData.messages);
+                                break;
+                        }
+                        if (contentFragment) {
+                            contentDiv.appendChild(contentFragment);
+                        }
+                    }
+                    
+                    // Re-attach event listeners for toggle switches in settings tab
+                    if (tabId === 'settings') {
+                        attachToggleListeners();
+                    }
+                    
+                    // Attach message listeners for messages tab
+                    if (tabId === 'messages') {
+                        attachMessageListeners();
+                    }
+                });
+                
+                // Add keyboard navigation
+                tab.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+            
+            // Function to attach event listeners to toggle switches
+            function attachToggleListeners() {
+                const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+                toggleSwitches.forEach(toggle => {
+                    toggle.addEventListener('change', function() {
+                        const label = this.parentElement;
+                        const optionName = label.previousElementSibling.querySelector('h3').textContent;
+                        if (this.checked) {
+                            console.log(`Toggle switched ON for ${optionName}`);
+                        } else {
+                            console.log(`Toggle switched OFF for ${optionName}`);
+                        }
+                    });
+                });
+            }
+            
+            // Add click event listeners to messages for interactivity
+            function attachMessageListeners() {
+                const messages = document.querySelectorAll('.message');
+                messages.forEach(message => {
+                    message.addEventListener('click', function() {
+                        const sender = this.querySelector('.message-sender').textContent;
+                        console.log(`Opening message from ${sender}`);
+                        this.classList.remove('unread');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

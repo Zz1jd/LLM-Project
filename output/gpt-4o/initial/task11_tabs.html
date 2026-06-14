@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabs Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .tabs-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: background 0.3s;
+        }
+
+        .tab:hover {
+            background: #eaeaea;
+        }
+
+        .tab.active {
+            background: #fff;
+            font-weight: bold;
+            border-bottom: 2px solid #007BFF;
+        }
+
+        .tab-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active" data-tab="profile">Profile</div>
+            <div class="tab" data-tab="settings">Settings</div>
+            <div class="tab" data-tab="messages">Messages</div>
+        </div>
+        <div class="tab-content" id="tab-content">
+            Welcome to the Profile tab.
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const tabContent = document.getElementById('tab-content');
+
+        const contentMap = {
+            profile: 'Welcome to the Profile tab.',
+            settings: 'Here you can adjust your Settings.',
+            messages: 'Check your Messages here.'
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+
+                // Add active class to the clicked tab
+                tab.classList.add('active');
+
+                // Update the content area
+                const tabKey = tab.getAttribute('data-tab');
+                tabContent.innerHTML = contentMap[tabKey];
+            });
+        });
+    </script>
+</body>
+</html>

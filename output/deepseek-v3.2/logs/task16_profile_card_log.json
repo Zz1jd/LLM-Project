@@ -1,0 +1,62 @@
+{
+  "task": "task16_profile_card",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 6,
+    "a11yErrors": 4,
+    "secErrors": 2,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 2.83:1. Recommendation:  change background to #007bc7. | [Affected Elements] html > body > div > div:nth-child(4) > a:nth-child(1) > span",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.32:1. Recommendation:  change background to #685ffb. | [Affected Elements] #bio1, #bio2, #bio3"
+      ],
+      "security": [
+        "[JS Line 17] Unsafe DOM manipulation: Unsafe assignment to innerHTML. Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 1,
+      "a11yErrors": 0,
+      "secErrors": 1,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 1
+  }
+}

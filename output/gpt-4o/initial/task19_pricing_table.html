@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .pricing-table {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .pricing-tier {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-tier h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .pricing-tier .price {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #007BFF;
+        }
+
+        .pricing-tier ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .pricing-tier ul li {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .pricing-tier button {
+            background-color: #007BFF;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .pricing-tier button:hover {
+            background-color: #0056b3;
+        }
+
+        .discount-banner {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ff5722;
+            color: #ffffff;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-table">
+        <div class="pricing-tier" id="basic-tier">
+            <h2>Basic</h2>
+            <div class="price">$19/month</div>
+            <ul>
+                <li>5 Projects</li>
+                <li>10 GB Storage</li>
+                <li>Email Support</li>
+            </ul>
+            <button>Choose Basic</button>
+        </div>
+        <div class="pricing-tier" id="pro-tier">
+            <h2>Pro</h2>
+            <div class="price">$49/month</div>
+            <ul>
+                <li>50 Projects</li>
+                <li>100 GB Storage</li>
+                <li>Priority Support</li>
+            </ul>
+            <button>Choose Pro</button>
+        </div>
+        <div class="pricing-tier" id="enterprise-tier">
+            <h2>Enterprise</h2>
+            <div class="price">$99/month</div>
+            <ul>
+                <li>Unlimited Projects</li>
+                <li>1 TB Storage</li>
+                <li>Dedicated Support</li>
+            </ul>
+            <button>Choose Enterprise</button>
+        </div>
+    </div>
+
+    <script>
+        // Dynamically inject "Special Discount" banner
+        const proTier = document.getElementById('pro-tier');
+        const discountBannerHTML = '<div class="discount-banner">Special Discount</div>';
+        proTier.insertAdjacentHTML('afterbegin', discountBannerHTML);
+    </script>
+</body>
+</html>

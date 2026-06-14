@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .faq-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+        
+        .faq-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            transition: background-color 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: #edf2f7;
+        }
+        
+        .faq-question.active {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            color: #3498db;
+        }
+        
+        .faq-question.active .icon {
+            transform: rotate(45deg);
+            color: #2ecc71;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.3s ease;
+            background-color: white;
+        }
+        
+        .faq-answer.open {
+            max-height: 500px;
+        }
+        
+        .answer-content {
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.05rem;
+        }
+        
+        .answer-content p {
+            margin-bottom: 15px;
+        }
+        
+        .answer-content ul, .answer-content ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+        
+        .note {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .faq-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-question {
+                font-size: 1.1rem;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <h1>Frequently Asked Questions</h1>
+        
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question" data-id="1">
+                    <span>How does this FAQ accordion work?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="faq-answer" id="answer-1"></div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" data-id="2">
+                    <span>Can I add more questions to this accordion?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="faq-answer" id="answer-2"></div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" data-id="3">
+                    <span>Is the content loaded dynamically?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="faq-answer" id="answer-3"></div>
+            </div>
+        </div>
+        
+        <div class="note">Click on any question to reveal its answer. Answers are loaded dynamically when opened.</div>
+    </div>
+
+    <script>
+        // FAQ data - answers to be injected dynamically
+        const faqData = {
+            1: `
+                <p>This FAQ accordion uses vanilla JavaScript, CSS, and HTML to create an interactive experience. When you click on a question, the answer is dynamically injected into the page using <code>insertAdjacentHTML</code>.</p>
+                <p>The animation is achieved through CSS transitions that smoothly expand and collapse the answer section. The plus icon rotates to indicate the open/closed state.</p>
+                <p>Key features include:</p>
+                <ul>
+                    <li>Smooth expand/collapse animations</li>
+                    <li>Dynamic content injection</li>
+                    <li>Responsive design for all screen sizes</li>
+                    <li>Clean, modern visual design</li>
+                </ul>
+            `,
+            2: `
+                <p>Yes, you can easily add more questions to this accordion. The structure is designed to be extensible. To add a new FAQ item:</p>
+                <ol>
+                    <li>Add a new <code>.faq-item</code> div to the HTML structure</li>
+                    <li>Make sure to set the correct <code>data-id</code> attribute on the question element</li>
+                    <li>Add a corresponding answer in the JavaScript <code>faqData</code> object with the matching ID</li>
+                </ol>
+                <p>The JavaScript will automatically handle the new item without any additional code changes, as it uses event delegation to handle clicks on all question elements.</p>
+                <p>You can also modify the styling in the CSS section to match your preferred design aesthetic.</p>
+            `,
+            3: `
+                <p>Yes! The answers are loaded dynamically when you click on a question. This is accomplished using JavaScript's <code>insertAdjacentHTML</code> method.</p>
+                <p>Here's how it works:</p>
+                <ul>
+                    <li>Initially, the answer containers are empty</li>
+                    <li>When you click a question, JavaScript checks if the answer has already been loaded</li>
+                    <li>If not, it retrieves the answer content from the <code>faqData</code> object and injects it into the DOM</li>
+                    <li>The answer then smoothly expands to reveal the content</li>
+                </ul>
+                <p>This approach has several benefits:</p>
+                <ul>
+                    <li>Initial page load is faster since answer content isn't loaded until needed</li>
+                    <li>More efficient use of bandwidth for users who don't read all answers</li>
+                    <li>Clean separation between structure (HTML) and content (JavaScript data)</li>
+                </ul>
+            `
+        };
+        
+        // Track which answers have been loaded
+        const loadedAnswers = new Set();
+        
+        // Handle FAQ question clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const answerElement = document.getElementById(`answer-${id}`);
+                    const isOpen = answerElement.classList.contains('open');
+                    
+                    // Close all other FAQ items
+                    document.querySelectorAll('.faq-answer.open').forEach(openAnswer => {
+                        if (openAnswer.id !== `answer-${id}`) {
+                            openAnswer.classList.remove('open');
+                            openAnswer.previousElementSibling.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current FAQ item
+                    if (isOpen) {
+                        answerElement.classList.remove('open');
+                        this.classList.remove('active');
+                    } else {
+                        // Inject answer content if not already loaded
+                        if (!loadedAnswers.has(id)) {
+                            answerElement.insertAdjacentHTML('beforeend', 
+                                `<div class="answer-content">${faqData[id]}</div>`);
+                            loadedAnswers.add(id);
+                        }
+                        
+                        answerElement.classList.add('open');
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // Open first FAQ by default
+            setTimeout(() => {
+                const firstQuestion = document.querySelector('.faq-question');
+                if (firstQuestion) {
+                    firstQuestion.click();
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

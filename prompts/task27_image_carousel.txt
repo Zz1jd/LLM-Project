@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for an image carousel/slider.
+It must include:
+1. A container showing one image at a time.
+2. "Next" and "Prev" navigation buttons.
+3. Dot indicators at the bottom to jump to specific slides.
+4. JavaScript to handle the sliding logic and update the active dot.

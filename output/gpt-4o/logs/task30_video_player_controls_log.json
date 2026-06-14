@@ -1,0 +1,60 @@
+{
+  "task": "task30_video_player_controls",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 4,
+    "a11yErrors": 1,
+    "secErrors": 3,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This rangeinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #volumeSlider"
+      ],
+      "security": [
+        "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 3
+  }
+}

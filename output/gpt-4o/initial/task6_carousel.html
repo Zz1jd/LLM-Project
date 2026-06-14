@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .carousel {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+        }
+        .carousel img {
+            width: 100%;
+            display: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .carousel img.active {
+            display: block;
+            opacity: 1;
+        }
+        .carousel img.hidden {
+            opacity: 0;
+        }
+        .carousel .controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .carousel .controls button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #333;
+            padding: 0 10px;
+            transition: color 0.3s;
+        }
+        .carousel .controls button:hover {
+            color: #007BFF;
+        }
+        .carousel .caption {
+            text-align: center;
+            padding: 10px;
+            font-size: 1rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <img src="https://via.placeholder.com/600x400?text=Image+1" alt="Image 1" class="active">
+        <img src="https://via.placeholder.com/600x400?text=Image+2" alt="Image 2">
+        <img src="https://via.placeholder.com/600x400?text=Image+3" alt="Image 3">
+        <div class="controls">
+            <button id="prev">←</button>
+            <button id="next">→</button>
+        </div>
+        <div class="caption">Caption for Image 1</div>
+    </div>
+    <script>
+        const images = document.querySelectorAll('.carousel img');
+        const caption = document.querySelector('.carousel .caption');
+        const captions = [
+            "Caption for Image 1",
+            "Caption for Image 2",
+            "Caption for Image 3"
+        ];
+        let currentIndex = 0;
+
+        function updateCarousel(index) {
+            images.forEach((img, i) => {
+                img.classList.remove('active', 'hidden');
+                if (i === index) {
+                    img.classList.add('active');
+                } else {
+                    img.classList.add('hidden');
+                }
+            });
+            caption.innerHTML = captions[index];
+        }
+
+        document.getElementById('prev').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateCarousel(currentIndex);
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateCarousel(currentIndex);
+        });
+
+        updateCarousel(currentIndex);
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a simple monthly calendar grid.
+1. A 7-column grid for days of the week.
+2. Clicking a specific date highlights it.
+3. Display "Selected: [Date]" dynamically using innerHTML.

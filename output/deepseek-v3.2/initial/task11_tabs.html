@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabs Component</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .tabs-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 18px 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            user-select: none;
+        }
+        
+        .tab:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .tab.active {
+            color: #4361ee;
+            border-bottom: 3px solid #4361ee;
+            background-color: white;
+        }
+        
+        .tab-content-container {
+            padding: 30px;
+            min-height: 300px;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-content h2 {
+            color: #343a40;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .tab-content p {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .profile-details h3 {
+            color: #343a40;
+            margin-bottom: 5px;
+        }
+        
+        .profile-details p {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .settings-option {
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-option h3 {
+            color: #343a40;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .settings-option p {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #4361ee;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .message {
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
+        
+        .message:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            color: #343a40;
+        }
+        
+        .message-time {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .message-preview {
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        .unread {
+            border-left: 4px solid #4361ee;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 15px;
+            }
+            
+            .tab-content-container {
+                padding: 20px;
+            }
+            
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <div class="tab active" data-tab="profile">Profile</div>
+            <div class="tab" data-tab="settings">Settings</div>
+            <div class="tab" data-tab="messages">Messages</div>
+        </div>
+        
+        <div class="tab-content-container">
+            <div class="tab-content active" id="profile">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="tab-content" id="settings">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="tab-content" id="messages">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab elements
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Content data for each tab
+            const tabContentData = {
+                profile: `
+                    <h2>User Profile</h2>
+                    <p>This is your personal profile page. Here you can view and manage your account information.</p>
+                    
+                    <div class="profile-info">
+                        <div class="avatar">JD</div>
+                        <div class="profile-details">
+                            <h3>John Doe</h3>
+                            <p>Software Developer</p>
+                            <p>San Francisco, CA</p>
+                            <p>Joined: January 2023</p>
+                        </div>
+                    </div>
+                    
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                `,
+                
+                settings: `
+                    <h2>Account Settings</h2>
+                    <p>Manage your account preferences and privacy settings.</p>
+                    
+                    <div class="settings-option">
+                        <div>
+                            <h3>Email Notifications</h3>
+                            <p>Receive email updates about your account activity</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div>
+                            <h3>Dark Mode</h3>
+                            <p>Switch to dark theme for better visibility at night</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div>
+                            <h3>Two-Factor Authentication</h3>
+                            <p>Add an extra layer of security to your account</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div>
+                            <h3>Auto-Save Drafts</h3>
+                            <p>Automatically save your work as you type</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <p>All changes are saved automatically. You can revert any setting at any time.</p>
+                `,
+                
+                messages: `
+                    <h2>Messages</h2>
+                    <p>Your recent conversations and messages.</p>
+                    
+                    <div class="message unread">
+                        <div class="message-header">
+                            <div class="message-sender">Alex Johnson</div>
+                            <div class="message-time">10:42 AM</div>
+                        </div>
+                        <div class="message-preview">Hey, are we still meeting for lunch today? Let me know if the time works for you.</div>
+                    </div>
+                    
+                    <div class="message">
+                        <div class="message-header">
+                            <div class="message-sender">Sarah Williams</div>
+                            <div class="message-time">Yesterday</div>
+                        </div>
+                        <div class="message-preview">I've sent you the project files. Please review them when you have a chance.</div>
+                    </div>
+                    
+                    <div class="message">
+                        <div class="message-header">
+                            <div class="message-sender">Team Updates</div>
+                            <div class="message-time">May 15</div>
+                        </div>
+                        <div class="message-preview">Monthly team meeting has been rescheduled to Friday at 2 PM. Please update your calendar.</div>
+                    </div>
+                    
+                    <div class="message unread">
+                        <div class="message-header">
+                            <div class="message-sender">Michael Chen</div>
+                            <div class="message-time">May 14</div>
+                        </div>
+                        <div class="message-preview">Thanks for your help with the code review. Your suggestions were really helpful!</div>
+                    </div>
+                    
+                    <p>You have 2 unread messages. Click on a message to open the full conversation.</p>
+                `
+            };
+            
+            // Initialize with first tab content
+            document.getElementById('profile').innerHTML = tabContentData.profile;
+            
+            // Add click event listeners to tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Get the corresponding content div and load content
+                    const contentDiv = document.getElementById(tabId);
+                    contentDiv.innerHTML = tabContentData[tabId];
+                    contentDiv.classList.add('active');
+                    
+                    // Re-attach event listeners for toggle switches in settings tab
+                    if (tabId === 'settings') {
+                        attachToggleListeners();
+                    }
+                });
+            });
+            
+            // Function to attach event listeners to toggle switches
+            function attachToggleListeners() {
+                const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+                toggleSwitches.forEach(toggle => {
+                    toggle.addEventListener('change', function() {
+                        const label = this.parentElement;
+                        if (this.checked) {
+                            console.log(`Toggle switched ON for ${label.previousElementSibling.querySelector('h3').textContent}`);
+                        } else {
+                            console.log(`Toggle switched OFF for ${label.previousElementSibling.querySelector('h3').textContent}`);
+                        }
+                    });
+                });
+            }
+            
+            // Add click event listeners to messages for interactivity
+            function attachMessageListeners() {
+                const messages = document.querySelectorAll('.message');
+                messages.forEach(message => {
+                    message.addEventListener('click', function() {
+                        const sender = this.querySelector('.message-sender').textContent;
+                        console.log(`Opening message from ${sender}`);
+                        this.classList.remove('unread');
+                    });
+                });
+            }
+            
+            // Initialize toggle listeners for initial settings tab (when it's loaded)
+            // and message listeners when messages tab is loaded
+            const originalTabClick = tabs[2].onclick;
+            tabs[2].onclick = function() {
+                if (originalTabClick) originalTabClick.call(this);
+                setTimeout(attachMessageListeners, 10);
+            };
+        });
+    </script>
+</body>
+</html>

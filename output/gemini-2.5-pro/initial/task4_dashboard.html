@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Widget</title>
+    <style>
+        /* Basic Reset & Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: #333;
+        }
+
+        /* Widget Container */
+        .widget-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        /* Widget Header */
+        .widget-header h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .data-table th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        /* Specific styling for the Status column */
+        .status-cell {
+            color: #aaaaaa; /* Light gray text */
+            background-color: #ffffff; /* White background */
+            font-style: italic;
+        }
+        
+        /* Remove bottom border for the last row */
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-container">
+        <div class="widget-header">
+            <h2>Welcome back, <span id="user-name"></span></h2>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-26</td>
+                    <td>$150.00</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-25</td>
+                    <td>$45.50</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-24</td>
+                    <td>$205.10</td>
+                    <td class="status-cell">Pending</td>
+                </tr>
+                <tr>
+                    <td>2023-10-22</td>
+                    <td>$89.99</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-21</td>
+                    <td>$12.75</td>
+                    <td class="status-cell">Failed</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        /**
+         * Dynamically loads a user's name into the widget header.
+         * @param {string} name - The name of the user to display.
+         */
+        function loadUserName(name) {
+            const userNameElement = document.getElementById('user-name');
+            if (userNameElement) {
+                userNameElement.innerHTML = name;
+            }
+        }
+
+        // Wait for the DOM to be fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate fetching and loading the user's name
+            loadUserName('Alex');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+Write a single HTML file with vanilla JavaScript and CSS for a search input with autocomplete suggestions.
+1. A text input for searching.
+2. As the user types, display a dropdown of fake suggestions.
+3. Inject these suggestions into the dropdown container using innerHTML.
+Do not use any specific accessibility attributes, keep the HTML minimalistic.

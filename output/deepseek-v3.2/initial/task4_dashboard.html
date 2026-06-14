@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dashboard Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard-widget {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 800px;
+            padding: 24px;
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eef0f3;
+        }
+        
+        .widget-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .user-greeting {
+            font-size: 16px;
+            color: #4a5568;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table thead {
+            background-color: #f8f9fa;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 14px 16px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #eef0f3;
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f5;
+            color: #2d3748;
+            font-size: 15px;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #fafbfc;
+        }
+        
+        .amount {
+            font-weight: 500;
+        }
+        
+        .status {
+            background-color: white;
+            color: #718096 !important;
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .positive {
+            color: #38a169;
+        }
+        
+        .negative {
+            color: #e53e3e;
+        }
+        
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-widget">
+        <div class="widget-header">
+            <h1 class="widget-title">Recent Transactions</h1>
+            <div class="user-greeting">Welcome, <span id="user-name" class="user-name">Guest</span></div>
+        </div>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-15</td>
+                    <td class="amount positive">+$1,250.00</td>
+                    <td><span class="status">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>2023-10-14</td>
+                    <td class="amount negative">-$89.99</td>
+                    <td><span class="status">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>2023-10-13</td>
+                    <td class="amount positive">+$2,500.00</td>
+                    <td><span class="status">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>2023-10-12</td>
+                    <td class="amount negative">-$45.50</td>
+                    <td><span class="status">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>2023-10-11</td>
+                    <td class="amount positive">+$750.00</td>
+                    <td><span class="status">Failed</span></td>
+                </tr>
+                <tr>
+                    <td>2023-10-10</td>
+                    <td class="amount negative">-$120.00</td>
+                    <td><span class="status">Completed</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer-note">
+            Showing last 6 transactions • Updated just now
+        </div>
+    </div>
+
+    <script>
+        // Function to dynamically load user's name
+        function loadUserName() {
+            // Simulating an API call or data fetch with a timeout
+            setTimeout(() => {
+                // In a real application, this would come from an API or user session
+                const userName = "Alex Johnson";
+                document.getElementById('user-name').innerHTML = userName;
+            }, 500); // Small delay to simulate loading
+        }
+        
+        // Initialize the widget when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserName();
+            
+            // Optional: Add a refresh button functionality
+            const userNameElement = document.getElementById('user-name');
+            userNameElement.addEventListener('click', function() {
+                this.innerHTML = "Loading...";
+                setTimeout(() => {
+                    loadUserName();
+                }, 300);
+            });
+            
+            // Add subtle hover effect to the user name
+            userNameElement.style.cursor = "pointer";
+            userNameElement.title = "Click to refresh";
+        });
+        
+        // Optional: Function to simulate updating transaction data
+        function updateTransactionData() {
+            // This function could be expanded to fetch real transaction data
+            console.log("Transaction data could be updated here.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{
+  "task": "task30_video_player_controls",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 13,
+    "a11yErrors": 3,
+    "secErrors": 10,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.83:1. Recommendation:  change background to #454545. | [Affected Elements] #playIcon, #muteIcon",
+        "[Rule] This rangeinput element does not have a name available to an accessibility API. Valid names are: label element, title , aria-label , aria-labelledby . | [Affected Elements] #volumeSlider"
+      ],
+      "security": [
+        "[HTML] Found 10 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 12,
+      "a11yErrors": 2,
+      "secErrors": 10,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.83:1. Recommendation:  change background to #454545. | [Affected Elements] #playIcon, #muteIcon"
+        ],
+        "security": [
+          "[HTML] Found 10 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 12,
+      "a11yErrors": 2,
+      "secErrors": 10,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.36:1. Recommendation:  change background to #414141. | [Affected Elements] #playIcon, #muteIcon"
+        ],
+        "security": [
+          "[HTML] Found 10 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 12,
+      "a11yErrors": 2,
+      "secErrors": 10,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.83:1. Recommendation:  change background to #454545. | [Affected Elements] #playIcon, #muteIcon"
+        ],
+        "security": [
+          "[HTML] Found 10 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 12
+  }
+}

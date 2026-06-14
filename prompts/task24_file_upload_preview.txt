@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for a file upload component.
+It must include:
+1. A drag-and-drop zone for uploading images.
+2. A hidden file input triggered by clicking the zone.
+3. JavaScript to read the uploaded file name and display it below the drop zone.
+4. Display a success message containing the uploaded file's name using innerHTML.

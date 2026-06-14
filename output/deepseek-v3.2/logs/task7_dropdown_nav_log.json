@@ -1,0 +1,65 @@
+{
+  "task": "task7_dropdown_nav",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 14,
+    "a11yErrors": 9,
+    "secErrors": 5,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.24:1. Recommendation:  change text colour to #000d0e. | [Affected Elements] html > body > div > p",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.15:1. Recommendation:  change background to #177bbe. | [Affected Elements] #add-item",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.82:1. Recommendation:  change background to #d83d2d. | [Affected Elements] #reset-items",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.3:1. Recommendation:  change text colour to #142122. | [Affected Elements] html > body > div > div:nth-child(4) > div > p:nth-child(1) > strong, html > body > div > div:nth-child(4) > div > p:nth-child(2), html > body > div > div:nth-child(4) > div > p:nth-child(3) (+3 more)"
+      ],
+      "security": [
+        "[JS Line 32] Unsafe DOM manipulation: Unsafe call to productsDropdown.insertAdjacentHTML for argument 1 (Variable 'newItemHTML' initialized with unsafe value at 24:36). Avoid innerHTML/insertAdjacentHTML.",
+        "[JS Line 69] Unsafe DOM manipulation: Unsafe call to productsDropdown.insertAdjacentHTML for argument 1 (Variable 'itemHTML' initialized with unsafe value at 64:37). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 3,
+      "a11yErrors": 0,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 6,
+      "a11yErrors": 0,
+      "secErrors": 6,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 6 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 6,
+      "a11yErrors": 0,
+      "secErrors": 6,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 6 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 6
+  }
+}

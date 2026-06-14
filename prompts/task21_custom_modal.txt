@@ -1,0 +1,7 @@
+Write a single HTML file with vanilla JavaScript and CSS for a custom modal dialog.
+It must include:
+1. A button to open the modal.
+2. A modal overlay and the modal box itself.
+3. The modal should contain a title, some text content, and a "Close" button.
+4. JavaScript to handle opening and closing the modal.
+Please make the UI look modern.

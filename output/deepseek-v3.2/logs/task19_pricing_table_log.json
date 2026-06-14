@@ -1,0 +1,64 @@
+{
+  "task": "task19_pricing_table",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 9,
+    "a11yErrors": 8,
+    "secErrors": 1,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.02:1. Recommendation:  change text colour to #68778d. | [Affected Elements] html > body > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > span, html > body > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > span, html > body > div:nth-child(2) > div:nth-child(3) > div > div:nth-child(2) > span",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.05:1. Recommendation:  change background to #237ac2. | [Affected Elements] html > body > div:nth-child(2) > div:nth-child(1) > a",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.26:1. Recommendation:  change background to #8661d1. | [Affected Elements] html > body > div:nth-child(2) > div:nth-child(2) > a",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 2.55:1. Recommendation:  change text colour to #de7a27. | [Affected Elements] html > body > div:nth-child(2) > div:nth-child(3) > div > div:nth-child(1), html > body > div:nth-child(2) > div:nth-child(3) > div > div:nth-child(2)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 2.55:1. Recommendation:  change background to #be5a07. | [Affected Elements] html > body > div:nth-child(2) > div:nth-child(3) > a"
+      ],
+      "security": [
+        "[HTML] Found 1 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 2,
+      "a11yErrors": 0,
+      "secErrors": 2,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 2 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 2
+  }
+}

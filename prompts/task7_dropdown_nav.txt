@@ -1,0 +1,5 @@
+Write a single HTML file with vanilla JavaScript and CSS for a multi-level dropdown navigation menu.
+1. Top level items: Home, Products, About.
+2. Hovering over "Products" shows a dropdown (Laptops, Phones).
+3. Use raw div elements for the menu items instead of semantic lists.
+4. A JS function that adds a "New Item" to the dropdown using insertAdjacentHTML.

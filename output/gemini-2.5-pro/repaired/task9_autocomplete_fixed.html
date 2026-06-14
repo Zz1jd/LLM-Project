@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+            margin: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 320px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #searchInput:focus {
+            border-color: #007bff;
+        }
+
+        .suggestions-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.active {
+            background-color: #f0f0f0;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <label for="searchInput" class="visually-hidden">Search for a programming language</label>
+        <input type="text" id="searchInput" placeholder="Search for a language..." role="combobox" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false" aria-activedescendant="">
+        <div id="suggestions" class="suggestions-container" role="listbox"></div>
+    </div>
+
+    <script>
+        const fakeSuggestions = [
+            "JavaScript", "Python", "Java", "C++", "C#", "Ruby", "Go", "Swift",
+            "Kotlin", "TypeScript", "PHP", "Rust", "Scala", "Perl", "Haskell",
+            "Lua", "Objective-C", "Dart", "Elixir", "Clojure"
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsContainer = document.getElementById('suggestions');
+        let activeSuggestionIndex = -1;
+
+        function clearSuggestions() {
+            suggestionsContainer.style.display = 'none';
+            searchInput.setAttribute('aria-expanded', 'false');
+            searchInput.removeAttribute('aria-activedescendant');
+            while (suggestionsContainer.firstChild) {
+                suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+            }
+        }
+
+        function selectSuggestion(suggestionText) {
+            searchInput.value = suggestionText;
+            clearSuggestions();
+            searchInput.focus();
+        }
+
+        function updateActiveSuggestion() {
+            const items = suggestionsContainer.querySelectorAll('.suggestion-item');
+            items.forEach((item, index) => {
+                if (index === activeSuggestionIndex) {
+                    item.classList.add('active');
+                    item.setAttribute('aria-selected', 'true');
+                    searchInput.setAttribute('aria-activedescendant', item.id);
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('active');
+                    item.setAttribute('aria-selected', 'false');
+                }
+            });
+        }
+
+        function handleInput(event) {
+            const inputValue = event.target.value.toLowerCase().trim();
+            
+            clearSuggestions();
+
+            if (inputValue.length === 0) {
+                return;
+            }
+
+            const filteredSuggestions = fakeSuggestions.filter(suggestion =>
+                suggestion.toLowerCase().includes(inputValue)
+            );
+
+            if (filteredSuggestions.length > 0) {
+                activeSuggestionIndex = -1;
+                filteredSuggestions.forEach((suggestion, index) => {
+                    const suggestionElement = document.createElement('div');
+                    suggestionElement.className = 'suggestion-item';
+                    suggestionElement.id = `suggestion-${index}`;
+                    suggestionElement.textContent = suggestion;
+                    suggestionElement.setAttribute('role', 'option');
+                    suggestionElement.setAttribute('aria-selected', 'false');
+                    suggestionsContainer.appendChild(suggestionElement);
+                });
+
+                suggestionsContainer.style.display = 'block';
+                searchInput.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        function handleKeyDown(event) {
+            const items = suggestionsContainer.querySelectorAll('.suggestion-item');
+            if (suggestionsContainer.style.display === 'none' || items.length === 0) {
+                return;
+            }
+
+            switch (event.key) {
+                case 'ArrowDown':
+                    event.preventDefault();
+                    activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
+                    updateActiveSuggestion();
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
+                    updateActiveSuggestion();
+                    break;
+                case 'Enter':
+                    event.preventDefault();
+                    if (activeSuggestionIndex > -1) {
+                        selectSuggestion(items[activeSuggestionIndex].textContent);
+                    }
+                    break;
+                case 'Escape':
+                    clearSuggestions();
+                    break;
+            }
+        }
+
+        function handleSuggestionClick(event) {
+            const item = event.target.closest('.suggestion-item');
+            if (item) {
+                selectSuggestion(item.textContent);
+            }
+        }
+
+        function handleDocumentClick(event) {
+            if (!event.target.closest('.search-container')) {
+                clearSuggestions();
+            }
+        }
+        
+        searchInput.addEventListener('input', handleInput);
+        searchInput.addEventListener('keydown', handleKeyDown);
+        suggestionsContainer.addEventListener('click', handleSuggestionClick);
+        document.addEventListener('click', handleDocumentClick);
+    </script>
+
+</body>
+</html>

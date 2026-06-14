@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bar with Autocomplete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+        .results {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <label for="searchInput" id="searchLabel">Search</label>
+        <input type="text" class="search-input" placeholder="Search..." id="searchInput" aria-labelledby="searchLabel" autocomplete="off">
+        <div class="dropdown" id="dropdown" role="listbox" aria-labelledby="searchLabel"></div>
+    </div>
+    <div class="results" id="results" aria-live="polite">Results for: </div>
+
+    <script>
+        const mockData = [
+            "Apple",
+            "Banana",
+            "Cherry",
+            "Date",
+            "Elderberry",
+            "Fig",
+            "Grape",
+            "Honeydew",
+            "Kiwi",
+            "Lemon",
+            "Mango",
+            "Nectarine",
+            "Orange",
+            "Papaya",
+            "Quince",
+            "Raspberry",
+            "Strawberry",
+            "Tomato",
+            "Ugli fruit",
+            "Watermelon"
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const dropdown = document.getElementById('dropdown');
+        const results = document.getElementById('results');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            while (dropdown.firstChild) {
+                dropdown.removeChild(dropdown.firstChild);
+            }
+            if (query) {
+                const filteredData = mockData.filter(item => item.toLowerCase().includes(query));
+                if (filteredData.length > 0) {
+                    dropdown.style.display = 'block';
+                    filteredData.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'dropdown-item';
+                        div.textContent = item;
+                        div.setAttribute('role', 'option');
+                        div.tabIndex = 0;
+                        div.addEventListener('click', () => {
+                            searchInput.value = item;
+                            results.textContent = `Results for: ${item}`;
+                            dropdown.style.display = 'none';
+                        });
+                        div.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                searchInput.value = item;
+                                results.textContent = `Results for: ${item}`;
+                                dropdown.style.display = 'none';
+                            }
+                        });
+                        dropdown.appendChild(div);
+                    });
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            } else {
+                dropdown.style.display = 'none';
+            }
+            results.textContent = `Results for: ${query}`;
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Widget</title>
+    <style>
+        /* Basic Reset & Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: #333;
+        }
+
+        /* Widget Container */
+        .widget-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        /* Widget Header */
+        .widget-header h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .data-table th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6c797a;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        /* Specific styling for the Status column */
+        .status-cell {
+            color: #767676; /* Light gray text */
+            background-color: #ffffff; /* White background */
+            font-style: italic;
+        }
+        
+        /* Remove bottom border for the last row */
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Accessibility helper class */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-container">
+        <div class="widget-header">
+            <h2>Welcome back, <span id="user-name"></span></h2>
+        </div>
+        <table class="data-table">
+            <caption class="sr-only">Recent Transactions</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-10-26</td>
+                    <td>$150.00</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-25</td>
+                    <td>$45.50</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-24</td>
+                    <td>$205.10</td>
+                    <td class="status-cell">Pending</td>
+                </tr>
+                <tr>
+                    <td>2023-10-22</td>
+                    <td>$89.99</td>
+                    <td class="status-cell">Completed</td>
+                </tr>
+                <tr>
+                    <td>2023-10-21</td>
+                    <td>$12.75</td>
+                    <td class="status-cell">Failed</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Wrap script in a DOMContentLoaded event listener to ensure the DOM is fully loaded
+        // before the script runs. This is a safe, standard practice that avoids inline execution issues.
+        document.addEventListener('DOMContentLoaded', function() {
+            /**
+             * Dynamically loads a user's name into the widget header.
+             * @param {string} name - The name of the user to display.
+             */
+            function loadUserName(name) {
+                const userNameElement = document.getElementById('user-name');
+                if (userNameElement) {
+                    // Using textContent prevents DOM-XSS by treating the input as plain text.
+                    userNameElement.textContent = name;
+                }
+            }
+
+            // Simulate fetching and loading the user's name
+            loadUserName('Alex');
+        });
+    </script>
+
+</body>
+</html>

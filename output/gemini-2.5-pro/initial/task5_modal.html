@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Subscription Modal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f4f7f6;
+            --modal-background: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #dddddd;
+            --overlay-color: rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .launch-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .launch-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: var(--modal-background);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-close-btn::before,
+        .modal-close-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 2px;
+            background-color: #aaa;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-close-btn:hover::before,
+        .modal-close-btn:hover::after {
+            background-color: #333;
+        }
+
+        .modal-close-btn::before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .modal-close-btn::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .modal-container h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .modal-container p {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .subscribe-button {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .subscribe-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #confirmation-message {
+            padding: 20px 0;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <button class="launch-button" id="launch-modal-btn">Join Our Newsletter</button>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal"></button>
+            
+            <div id="modal-content-wrapper">
+                <h2>Stay Updated!</h2>
+                <p>Subscribe to our newsletter for the latest news and updates.</p>
+                <form class="subscribe-form" id="subscribe-form">
+                    <input type="email" class="email-input" id="email-input" placeholder="your.email@example.com" required>
+                    <button type="submit" class="subscribe-button">Subscribe</button>
+                </form>
+            </div>
+
+            <div id="confirmation-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const launchModalBtn = document.getElementById('launch-modal-btn');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const closeModalBtn = document.getElementById('modal-close-btn');
+            const subscribeForm = document.getElementById('subscribe-form');
+            const emailInput = document.getElementById('email-input');
+            const confirmationMessageDiv = document.getElementById('confirmation-message');
+            const modalContentWrapper = document.getElementById('modal-content-wrapper');
+
+            const openModal = () => {
+                modalOverlay.classList.add('active');
+            };
+
+            const closeModal = () => {
+                modalOverlay.classList.remove('active');
+            };
+
+            launchModalBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            subscribeForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const email = emailInput.value;
+
+                if (email && email.includes('@')) {
+                    // Hide the form content
+                    modalContentWrapper.style.display = 'none';
+                    
+                    // Inject and show the confirmation message
+                    confirmationMessageDiv.innerHTML = `Thank you, <strong>${email}</strong>!`;
+                    
+                    // Optional: Close the modal after a few seconds
+                    setTimeout(() => {
+                        closeModal();
+                        // Reset modal for next time
+                        setTimeout(() => {
+                           modalContentWrapper.style.display = 'block';
+                           confirmationMessageDiv.innerHTML = '';
+                           emailInput.value = '';
+                        }, 500); // wait for closing animation
+                    }, 3000);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

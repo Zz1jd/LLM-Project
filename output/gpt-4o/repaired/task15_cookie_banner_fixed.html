@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Consent Banner</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #ccc;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #cookie-banner p {
+            margin: 0;
+            font-size: 14px;
+        }
+        #cookie-banner a {
+            color: #ccc;
+            text-decoration: underline;
+        }
+        #cookie-banner a:hover {
+            color: #fff;
+        }
+        #cookie-banner .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        #cookie-banner button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #cookie-banner .accept-btn {
+            background-color: #258829;
+            color: white;
+        }
+        #cookie-banner .decline-btn {
+            background-color: #e13023;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="cookie-banner" role="region" aria-label="Cookie consent banner">
+        <p>
+            We use cookies to improve your experience. Read our 
+            <a id="privacy-policy-link" href="#" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+        </p>
+        <div class="buttons">
+            <button class="accept-btn" id="accept-btn" aria-label="Accept cookies">Accept</button>
+            <button class="decline-btn" id="decline-btn" aria-label="Decline cookies">Decline</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cookieBanner = document.getElementById('cookie-banner');
+            const acceptButton = document.getElementById('accept-btn');
+            const declineButton = document.getElementById('decline-btn');
+
+            acceptButton.addEventListener('click', function () {
+                window.alert('You have accepted cookies.');
+                cookieBanner.style.display = 'none';
+            });
+
+            declineButton.addEventListener('click', function () {
+                window.alert('You have declined cookies.');
+                cookieBanner.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

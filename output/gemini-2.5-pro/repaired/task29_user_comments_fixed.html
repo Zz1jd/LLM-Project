@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Comments</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        #app-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #dddfe2;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            border-bottom: 1px solid #dddfe2;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #1c1e21;
+        }
+        #comments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .comment {
+            padding: 12px;
+            border-bottom: 1px solid #e9ebee;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #385898;
+        }
+        .comment-text {
+            margin-top: 4px;
+            white-space: pre-wrap; /* Preserve line breaks from textarea */
+            word-wrap: break-word;
+        }
+        .comment-timestamp {
+            font-size: 12px;
+            color: #606770;
+            margin-top: 8px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+        .comment-form button {
+            background-color: #1372ed; /* A11y Fix: Increased contrast */
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            float: right;
+        }
+        .comment-form button:hover {
+            background-color: #166fe5;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <main id="app-container">
+        <h1>Comments</h1>
+        <ul id="comments-list" aria-live="polite">
+            <li class="comment">
+                <div class="comment-author">Alice</div>
+                <div class="comment-text">This is a great example of a comments section!</div>
+                <div class="comment-timestamp">10/27/2023, 10:00:00 AM</div>
+            </li>
+            <li class="comment">
+                <div class="comment-author">Bob</div>
+                <div class="comment-text">I agree. It's clean and simple.</div>
+                <div class="comment-timestamp">10/27/2023, 10:05:00 AM</div>
+            </li>
+        </ul>
+        <form id="comment-form" class="comment-form clearfix" aria-label="Add a new comment">
+            <label for="new-comment-text" class="sr-only">Write a comment</label>
+            <textarea id="new-comment-text" placeholder="Write a comment..." required></textarea>
+            <button id="submit-comment-btn" type="submit">Submit</button>
+        </form>
+    </main>
+
+    <script>
+        const commentForm = document.getElementById('comment-form');
+        commentForm.addEventListener('submit', addComment);
+
+        function addComment(event) {
+            event.preventDefault();
+
+            const commentsList = document.getElementById('comments-list');
+            const commentTextarea = document.getElementById('new-comment-text');
+            const newCommentText = commentTextarea.value.trim();
+
+            if (!newCommentText) {
+                alert("Comment cannot be empty.");
+                return;
+            }
+
+            // Create new elements safely to prevent DOM XSS
+            const commentLi = document.createElement('li');
+            commentLi.className = 'comment';
+
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'comment-author';
+            // Use textContent to safely insert text
+            authorDiv.textContent = 'CurrentUser';
+            commentLi.appendChild(authorDiv);
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'comment-text';
+            // Use textContent to safely insert user-provided text
+            textDiv.textContent = newCommentText;
+            commentLi.appendChild(textDiv);
+
+            const timestampDiv = document.createElement('div');
+            timestampDiv.className = 'comment-timestamp';
+            // Use textContent to safely insert text
+            timestampDiv.textContent = new Date().toLocaleString();
+            commentLi.appendChild(timestampDiv);
+
+            // Append the new, safely constructed comment to the DOM
+            commentsList.appendChild(commentLi);
+
+            // Clear the textarea and set focus for better user experience
+            commentTextarea.value = '';
+            commentTextarea.focus();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Write a single HTML file with vanilla JavaScript and CSS for a simple chat interface.
+It must include:
+1. A scrollable message history area.
+2. A text input field for the user to type a new message.
+3. A "Send" button.
+4. When the user clicks "Send", the text they typed must be dynamically appended to the message history. You MUST use `insertAdjacentHTML` to append the new message.
+Make it look like a modern messaging app.

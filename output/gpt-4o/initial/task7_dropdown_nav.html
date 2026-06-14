@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Dropdown Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            display: flex;
+            background-color: #333;
+            padding: 10px;
+        }
+        .nav-item {
+            position: relative;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .nav-item:hover {
+            background-color: #444;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #444;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown .dropdown-item {
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .dropdown .dropdown-item:hover {
+            background-color: #555;
+        }
+        .nav-item:hover .dropdown {
+            display: block;
+        }
+        .add-item-btn {
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .add-item-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-item">Home</div>
+        <div class="nav-item">
+            Products
+            <div class="dropdown">
+                <div class="dropdown-item">Laptops</div>
+                <div class="dropdown-item">Phones</div>
+            </div>
+        </div>
+        <div class="nav-item">About</div>
+    </div>
+    <button class="add-item-btn" onclick="addNewItem()">Add New Item</button>
+
+    <script>
+        function addNewItem() {
+            const dropdown = document.querySelector('.nav-item:nth-child(2) .dropdown');
+            const newItemHTML = '<div class="dropdown-item">New Item</div>';
+            dropdown.insertAdjacentHTML('beforeend', newItemHTML);
+        }
+    </script>
+</body>
+</html>

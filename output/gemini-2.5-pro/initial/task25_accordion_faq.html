@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        /* Google Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        /* Basic Reset & Body Styling */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* FAQ Container */
+        .faq-container {
+            width: 100%;
+            max-width: 700px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .faq-header {
+            padding: 25px 30px;
+            background-color: #4a4a4a;
+            color: #fff;
+            text-align: center;
+        }
+
+        .faq-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* Individual FAQ Item */
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Question Button */
+        .faq-question {
+            width: 100%;
+            background-color: transparent;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .faq-question:hover {
+            background-color: #f9f9f9;
+        }
+
+        .faq-question.active {
+            background-color: #f5f5f5;
+            color: #007bff;
+        }
+
+        /* Icon Styling */
+        .faq-icon {
+            font-size: 22px;
+            font-weight: bold;
+            transition: transform 0.3s ease-in-out;
+            color: #007bff;
+            min-width: 15px; /* Ensures alignment */
+            text-align: center;
+        }
+
+        .faq-question.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Answer Panel */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background-color: #fafafa;
+        }
+
+        .faq-answer p {
+            padding: 20px 30px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>What is the return policy?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    You can return any item within 30 days of purchase, provided it is in its original condition with all tags attached. Please visit our returns page to initiate the process and print your shipping label.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>How do I track my order?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    Once your order has shipped, you will receive an email with a tracking number and a link to the carrier's website. You can use this number to track your package's journey to your doorstep. You can also find tracking information in your account's order history.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Do you offer international shipping?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    Yes, we ship to over 100 countries worldwide. International shipping costs and delivery times vary by destination. Please proceed to checkout to see the available shipping options and costs for your location.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function () {
+                    const currentlyActiveQuestion = document.querySelector('.faq-question.active');
+
+                    // If there is an active question and it's not the one we just clicked, close it.
+                    if (currentlyActiveQuestion && currentlyActiveQuestion !== this) {
+                        currentlyActiveQuestion.classList.remove('active');
+                        currentlyActiveQuestion.setAttribute('aria-expanded', 'false');
+                        currentlyActiveQuestion.nextElementSibling.style.maxHeight = null;
+                        currentlyActiveQuestion.querySelector('.faq-icon').textContent = '+';
+                    }
+
+                    // Toggle the clicked question
+                    this.classList.toggle('active');
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('.faq-icon');
+
+                    if (this.classList.contains('active')) {
+                        this.setAttribute('aria-expanded', 'true');
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                        icon.textContent = '+'; // Icon is rotated via CSS transform
+                    } else {
+                        this.setAttribute('aria-expanded', 'false');
+                        answer.style.maxHeight = null;
+                        icon.textContent = '+';
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

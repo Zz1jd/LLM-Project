@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .discount-banner {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            display: inline-block;
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .pricing-tier {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-tier:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        .tier-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        .tier-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .basic .tier-name { color: #4299e1; }
+        .pro .tier-name { color: #9f7aea; }
+        .enterprise .tier-name { color: #de7a27; }
+        .price {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin: 15px 0;
+        }
+        .basic .price { color: #4299e1; }
+        .pro .price { color: #9f7aea; }
+        .enterprise .price { color: #de7a27; }
+        .period {
+            font-size: 1rem;
+            color: #68778d;
+            font-weight: normal;
+        }
+        .features {
+            list-style: none;
+            flex-grow: 1;
+            margin-bottom: 30px;
+        }
+        .features li {
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+        .features li:before {
+            content: "✓";
+            color: #48bb78;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        .cta-button {
+            display: block;
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            color: white;
+        }
+        .basic .cta-button {
+            background-color: #237ac2;
+        }
+        .basic .cta-button:hover {
+            background-color: #1d68a8;
+        }
+        .pro .cta-button {
+            background-color: #8661d1;
+        }
+        .pro .cta-button:hover {
+            background-color: #7551c0;
+        }
+        .enterprise .cta-button {
+            background-color: #be5a07;
+        }
+        .enterprise .cta-button:hover {
+            background-color: #a54d06;
+        }
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #9f7aea;
+            color: white;
+            padding: 8px 35px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .pro {
+            border: 2px solid #9f7aea;
+        }
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Choose Your Plan</h1>
+        <p class="subtitle">Select the perfect plan for your needs. All plans include our core features with scalable options for teams of any size.</p>
+        <div id="discountContainer"></div>
+    </div>
+    <div class="pricing-grid">
+        <div class="pricing-tier basic">
+            <div class="tier-header">
+                <div class="tier-name">Basic</div>
+                <div class="price">$19<span class="period">/month</span></div>
+                <p>Perfect for individuals & small projects</p>
+            </div>
+            <ul class="features">
+                <li>Up to 5 users</li>
+                <li>10GB storage</li>
+                <li>Basic analytics</li>
+                <li>Email support</li>
+                <li>API access (read-only)</li>
+            </ul>
+            <button class="cta-button" aria-label="Get Started with Basic plan">Get Started</button>
+        </div>
+        <div class="pricing-tier pro">
+            <div class="popular-badge" aria-label="Popular plan">POPULAR</div>
+            <div class="tier-header">
+                <div class="tier-name">Pro</div>
+                <div class="price">$49<span class="period">/month</span></div>
+                <p>Best for growing teams</p>
+            </div>
+            <ul class="features">
+                <li>Up to 50 users</li>
+                <li>100GB storage</li>
+                <li>Advanced analytics</li>
+                <li>Priority email & chat support</li>
+                <li>Full API access</li>
+                <li>Custom integrations</li>
+            </ul>
+            <button class="cta-button" aria-label="Try Pro plan free for 14 days">Try Free for 14 Days</button>
+        </div>
+        <div class="pricing-tier enterprise">
+            <div class="tier-header">
+                <div class="tier-name">Enterprise</div>
+                <div class="price">$99<span class="period">/month</span></div>
+                <p>For large organizations</p>
+            </div>
+            <ul class="features">
+                <li>Unlimited users</li>
+                <li>1TB+ storage</li>
+                <li>Real-time analytics dashboard</li>
+                <li>24/7 phone & dedicated support</li>
+                <li>Full API with webhooks</li>
+                <li>Custom SLA & security audit</li>
+                <li>On-premise deployment option</li>
+            </ul>
+            <button class="cta-button" aria-label="Contact sales for Enterprise plan">Contact Sales</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountContainer = document.getElementById('discountContainer');
+            const discountDiv = document.createElement('div');
+            discountDiv.className = 'discount-banner';
+            discountDiv.textContent = '🎉 Special Discount: Get 20% off annual plans! Limited time offer.';
+            discountContainer.appendChild(discountDiv);
+
+            const buttons = document.querySelectorAll('.cta-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tierName = this.closest('.pricing-tier').querySelector('.tier-name').textContent;
+                    alert(`Thank you for your interest in the ${tierName} plan! You will be redirected to the checkout shortly.`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

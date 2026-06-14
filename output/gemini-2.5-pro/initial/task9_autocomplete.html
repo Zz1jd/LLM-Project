@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Search</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+            margin: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 320px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #searchInput:focus {
+            border-color: #007bff;
+        }
+
+        .suggestions-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for a language...">
+        <div id="suggestions" class="suggestions-container"></div>
+    </div>
+
+    <script>
+        const fakeSuggestions = [
+            "JavaScript", "Python", "Java", "C++", "C#", "Ruby", "Go", "Swift",
+            "Kotlin", "TypeScript", "PHP", "Rust", "Scala", "Perl", "Haskell",
+            "Lua", "Objective-C", "Dart", "Elixir", "Clojure"
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsContainer = document.getElementById('suggestions');
+
+        searchInput.addEventListener('input', function() {
+            const inputValue = this.value.toLowerCase().trim();
+
+            if (inputValue.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                suggestionsContainer.innerHTML = '';
+                return;
+            }
+
+            const filteredSuggestions = fakeSuggestions.filter(suggestion =>
+                suggestion.toLowerCase().includes(inputValue)
+            );
+
+            if (filteredSuggestions.length > 0) {
+                const suggestionsHTML = filteredSuggestions.map(suggestion =>
+                    `<div class="suggestion-item">${suggestion}</div>`
+                ).join('');
+
+                suggestionsContainer.innerHTML = suggestionsHTML;
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+
+        suggestionsContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('suggestion-item')) {
+                searchInput.value = event.target.textContent;
+                suggestionsContainer.style.display = 'none';
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+Write a single HTML file with vanilla JavaScript and CSS for a Cookie Consent banner.
+1. Fixed at the bottom of the screen.
+2. Dark gray background with light gray text (low contrast).
+3. "Accept" and "Decline" buttons.
+4. Dynamically inject the privacy policy link text via innerHTML.

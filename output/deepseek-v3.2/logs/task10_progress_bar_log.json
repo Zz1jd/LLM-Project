@@ -1,0 +1,61 @@
+{
+  "task": "task10_progress_bar",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 7,
+    "a11yErrors": 1,
+    "secErrors": 6,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.39:1. Recommendation:  change text colour to #486af5. | [Affected Elements] #progressPercent"
+      ],
+      "security": [
+        "[JS Line 100] Unsafe DOM manipulation: Unsafe assignment to innerHTML (Variable 'filename' declared as function parameter, which is considered unsafe. 'FunctionDeclaration' at 98:12). Avoid innerHTML/insertAdjacentHTML.",
+        "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 7,
+      "a11yErrors": 0,
+      "secErrors": 7,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 7 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 7,
+      "a11yErrors": 0,
+      "secErrors": 7,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 7 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 7,
+      "a11yErrors": 0,
+      "secErrors": 7,
+      "rawReport": {
+        "a11y": [],
+        "security": [
+          "[HTML] Found 7 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 7
+  }
+}

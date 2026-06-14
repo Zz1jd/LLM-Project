@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .upload-container {
+            text-align: center;
+            width: 300px;
+        }
+        .drop-zone {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #e9f5ff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .drop-zone:hover {
+            background-color: #d0ebff;
+        }
+        .drop-zone.dragover {
+            background-color: #cfe2ff;
+        }
+        .file-name {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
+        }
+        .success-message {
+            margin-top: 10px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <div class="drop-zone" id="dropZone">Drag & Drop an image here or click to upload</div>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="file-name" id="fileName"></div>
+        <div class="success-message" id="successMessage"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileName');
+        const successMessageDisplay = document.getElementById('successMessage');
+
+        // Trigger file input on click
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Handle drag and drop events
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        // Handle file input change
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                handleFileUpload(fileInput.files[0]);
+            }
+        });
+
+        // Handle file upload logic
+        function handleFileUpload(file) {
+            if (file.type.startsWith('image/')) {
+                fileNameDisplay.innerHTML = `File selected: ${file.name}`;
+                successMessageDisplay.innerHTML = `Success! Uploaded file: ${file.name}`;
+            } else {
+                fileNameDisplay.innerHTML = 'Please upload a valid image file.';
+                successMessageDisplay.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>

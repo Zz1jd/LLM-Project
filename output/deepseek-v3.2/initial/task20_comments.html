@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Section</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        
+        .comment-form {
+            margin-bottom: 32px;
+        }
+        
+        .comment-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #dddfe2;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: #1877f2;
+        }
+        
+        .post-button {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .post-button:hover {
+            background-color: #166fe5;
+        }
+        
+        .post-button:active {
+            background-color: #1461c9;
+        }
+        
+        .comments-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+        
+        .comments-list {
+            list-style-type: none;
+        }
+        
+        .comment-item {
+            background-color: #f0f2f5;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #1877f2;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .comment-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .comment-text {
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #65676b;
+        }
+        
+        .comment-time {
+            font-style: italic;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #65676b;
+        }
+        
+        .empty-state p {
+            margin-top: 8px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comment Section</h1>
+        
+        <div class="comment-form">
+            <textarea 
+                id="commentInput" 
+                class="comment-input" 
+                placeholder="Write your comment here..."
+            ></textarea>
+            <div id="warning" class="warning">Please enter a comment before posting.</div>
+            <button id="postButton" class="post-button">Post Comment</button>
+        </div>
+        
+        <h2 class="comments-title">Comments</h2>
+        
+        <div id="emptyState" class="empty-state">
+            <h3>No comments yet</h3>
+            <p>Be the first to share your thoughts!</p>
+        </div>
+        
+        <ul id="commentsList" class="comments-list"></ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentInput = document.getElementById('commentInput');
+            const postButton = document.getElementById('postButton');
+            const commentsList = document.getElementById('commentsList');
+            const emptyState = document.getElementById('emptyState');
+            const warning = document.getElementById('warning');
+            
+            // Load comments from localStorage on page load
+            loadComments();
+            
+            postButton.addEventListener('click', function() {
+                const commentText = commentInput.value.trim();
+                
+                if (!commentText) {
+                    warning.style.display = 'block';
+                    return;
+                }
+                
+                warning.style.display = 'none';
+                addComment(commentText);
+                commentInput.value = '';
+                commentInput.focus();
+            });
+            
+            // Allow posting with Ctrl+Enter or Cmd+Enter
+            commentInput.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    postButton.click();
+                }
+            });
+            
+            function addComment(text) {
+                // Create new comment element
+                const commentItem = document.createElement('li');
+                commentItem.className = 'comment-item';
+                
+                // Get current time
+                const now = new Date();
+                const timeString = now.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+                
+                // Set innerHTML with raw text (as per requirement)
+                commentItem.innerHTML = `
+                    <div class="comment-text">${text}</div>
+                    <div class="comment-meta">
+                        <span class="comment-author">User</span>
+                        <span class="comment-time">${timeString}</span>
+                    </div>
+                `;
+                
+                // Add to the top of the comments list
+                commentsList.insertBefore(commentItem, commentsList.firstChild);
+                
+                // Hide empty state
+                emptyState.style.display = 'none';
+                
+                // Save to localStorage
+                saveComments();
+            }
+            
+            function saveComments() {
+                const comments = [];
+                const commentItems = commentsList.querySelectorAll('.comment-item');
+                
+                commentItems.forEach(item => {
+                    const textElement = item.querySelector('.comment-text');
+                    const timeElement = item.querySelector('.comment-time');
+                    
+                    if (textElement && timeElement) {
+                        comments.push({
+                            text: textElement.textContent,
+                            time: timeElement.textContent
+                        });
+                    }
+                });
+                
+                localStorage.setItem('comments', JSON.stringify(comments));
+            }
+            
+            function loadComments() {
+                const savedComments = localStorage.getItem('comments');
+                
+                if (savedComments) {
+                    try {
+                        const comments = JSON.parse(savedComments);
+                        
+                        if (comments.length > 0) {
+                            emptyState.style.display = 'none';
+                            
+                            // Add comments in reverse order to maintain chronological order
+                            comments.reverse().forEach(comment => {
+                                const commentItem = document.createElement('li');
+                                commentItem.className = 'comment-item';
+                                
+                                commentItem.innerHTML = `
+                                    <div class="comment-text">${comment.text}</div>
+                                    <div class="comment-meta">
+                                        <span class="comment-author">User</span>
+                                        <span class="comment-time">${comment.time}</span>
+                                    </div>
+                                `;
+                                
+                                commentsList.appendChild(commentItem);
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error loading comments:', e);
+                    }
+                }
+            }
+            
+            // Clear warning when user starts typing
+            commentInput.addEventListener('input', function() {
+                if (this.value.trim() && warning.style.display === 'block') {
+                    warning.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

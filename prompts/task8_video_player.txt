@@ -1,0 +1,4 @@
+Write a single HTML file with vanilla JavaScript and CSS for a custom video player interface.
+1. A video placeholder area.
+2. Custom Play, Pause, and Mute controls using custom <div> elements styled as buttons.
+3. A function that displays the currently playing video title below the player using innerHTML.

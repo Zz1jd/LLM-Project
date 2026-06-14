@@ -1,0 +1,6 @@
+Write a single HTML file with vanilla JavaScript and CSS for an FAQ accordion section.
+It must include:
+1. A list of 3 frequently asked questions.
+2. Clicking a question should toggle the visibility of its answer.
+3. Only one answer should be open at a time.
+4. Smooth CSS transitions for the collapsing/expanding effect.

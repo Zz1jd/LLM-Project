@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .faq-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .faq-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .faq-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .faq-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.active {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .faq-question {
+            padding: 22px 60px 22px 25px;
+            cursor: pointer;
+            position: relative;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question {
+            background-color: #f0f7ff;
+        }
+        
+        .faq-question h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .faq-question:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            color: #3498db;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '−';
+            transform: translateY(-50%) rotate(0deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        
+        .faq-answer-content {
+            padding: 0 25px 25px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+        
+        .faq-answer-content p {
+            margin-bottom: 15px;
+        }
+        
+        .faq-answer-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .faq-footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .faq-container {
+                padding: 25px;
+            }
+            
+            .faq-header h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-question {
+                padding: 18px 50px 18px 20px;
+            }
+            
+            .faq-question h3 {
+                font-size: 1.2rem;
+            }
+            
+            .faq-question::after {
+                right: 20px;
+            }
+            
+            .faq-answer-content {
+                padding: 0 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Click on a question to reveal the answer. Only one answer is visible at a time.</p>
+        </div>
+        
+        <div class="faq-list">
+            <div class="faq-item active">
+                <div class="faq-question">
+                    <h3>What is the return policy for online purchases?</h3>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Our return policy allows you to return any item purchased online within 30 days of delivery for a full refund. Items must be in their original condition with all tags attached and packaging intact.</p>
+                        <p>To initiate a return, please visit our returns portal and enter your order number and email address. Once your return is approved, you'll receive a prepaid shipping label to send the item back to us.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How long does shipping typically take?</h3>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Standard shipping typically takes 5-7 business days within the continental United States. For expedited shipping options:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px;">
+                            <li>2-Day Shipping: Delivered within 2 business days</li>
+                            <li>Overnight Shipping: Delivered the next business day</li>
+                        </ul>
+                        <p>Shipping times may vary during holidays or promotional periods. You can track your order in real-time using the tracking number provided in your shipping confirmation email.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Do you offer international shipping?</h3>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes, we ship to over 50 countries worldwide. International shipping times vary by destination but typically range from 7-21 business days.</p>
+                        <p>Please note that international orders may be subject to customs duties, taxes, and fees imposed by the destination country. These charges are the responsibility of the recipient and are not included in the product price or shipping cost.</p>
+                        <p>For a complete list of countries we ship to and specific shipping rates, please visit our International Shipping page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-footer">
+            <p>Have more questions? <a href="#" style="color: #3498db; text-decoration: none;">Contact our support team</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            // Function to close all FAQ items except the one to open
+            function closeAllItems(exceptItem = null) {
+                faqItems.forEach(item => {
+                    if (item !== exceptItem) {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Function to toggle FAQ item
+            function toggleFaqItem(item) {
+                const isActive = item.classList.contains('active');
+                
+                // Close all items first
+                closeAllItems();
+                
+                // If the clicked item wasn't active, open it
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            }
+            
+            // Add click event to each FAQ question
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => toggleFaqItem(item));
+            });
+            
+            // Initialize with first item open
+            closeAllItems(faqItems[0]);
+            faqItems[0].classList.add('active');
+            
+            // Add keyboard accessibility
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.setAttribute('tabindex', '0');
+                
+                question.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleFaqItem(item);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

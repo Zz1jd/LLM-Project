@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Subscription Modal</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            overflow: hidden;
+        }
+
+        /* Overlay background */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal box */
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal h2 {
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .modal p {
+            margin: 0 0 20px;
+            color: #666;
+        }
+
+        .modal input[type="email"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .modal button {
+            background: #0072ed;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal button:hover {
+            background: #0056b3;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .close-btn:before,
+        .close-btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #333;
+            transform-origin: center;
+        }
+
+        .close-btn:before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .close-btn:after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        /* Confirmation message */
+        .confirmation {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #28a745;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay">
+        <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+            <button class="close-btn" id="closeBtn" aria-label="Close modal"></button>
+            <h2 id="modalTitle">Subscribe to our Newsletter</h2>
+            <p id="modalDescription">Stay updated with the latest news and offers.</p>
+            <label for="emailInput" style="display: block; text-align: left; margin-bottom: 5px;">Email Address:</label>
+            <input type="email" id="emailInput" placeholder="Enter your email" aria-label="Enter your email" />
+            <button id="subscribeBtn">Subscribe</button>
+            <div class="confirmation" id="confirmation" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('overlay');
+            const closeBtn = document.getElementById('closeBtn');
+            const subscribeBtn = document.getElementById('subscribeBtn');
+            const emailInput = document.getElementById('emailInput');
+            const confirmationDiv = document.getElementById('confirmation');
+
+            closeBtn.addEventListener('click', () => {
+                overlay.style.display = 'none';
+            });
+
+            subscribeBtn.addEventListener('click', () => {
+                const email = emailInput.value.trim();
+                if (email) {
+                    confirmationDiv.textContent = `Thank you, ${email}!`;
+                    confirmationDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

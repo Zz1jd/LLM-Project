@@ -1,0 +1,70 @@
+{
+  "task": "task26_multi_step_form",
+  "maxIterationsAllowed": 3,
+  "initialState": {
+    "totalErrors": 8,
+    "a11yErrors": 5,
+    "secErrors": 3,
+    "rawReport": {
+      "a11y": [
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change background to #0072ed. | [Affected Elements] html > body > div > div > div:nth-child(2) > div:nth-child(1), #next-btn",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 3.98:1. Recommendation:  change text colour to #0072ed. | [Affected Elements] html > body > div > div > div:nth-child(2) > div:nth-child(2)",
+        "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 1.49:1. Recommendation:  change background to #71777d. | [Affected Elements] html > body > div > div > div:nth-child(3) > div:nth-child(1)",
+        "[Rule] This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute \"submit\" or \"image\", or BUTTON elements with type \"submit\" or omitted/invalid. | [Affected Elements] #checkout-form"
+      ],
+      "security": [
+        "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+      ]
+    }
+  },
+  "repairHistory": [
+    {
+      "iteration": 1,
+      "totalErrors": 5,
+      "a11yErrors": 2,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 1.49:1. Recommendation:  change background to #71777d. | [Affected Elements] html > body > div > div > div:nth-child(3) > div:nth-child(1)",
+          "[Rule] This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute \"submit\" or \"image\", or BUTTON elements with type \"submit\" or omitted/invalid. | [Affected Elements] #checkout-form"
+        ],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "totalErrors": 4,
+      "a11yErrors": 1,
+      "secErrors": 3,
+      "rawReport": {
+        "a11y": [
+          "[Rule] This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute \"submit\" or \"image\", or BUTTON elements with type \"submit\" or omitted/invalid. | [Affected Elements] #checkout-form"
+        ],
+        "security": [
+          "[HTML] Found 3 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    },
+    {
+      "iteration": 3,
+      "totalErrors": 6,
+      "a11yErrors": 1,
+      "secErrors": 5,
+      "rawReport": {
+        "a11y": [
+          "[Rule] Invalid autocomplete value: street-address. Element does not belong to Multiline control group. | [Affected Elements] #address"
+        ],
+        "security": [
+          "[HTML] Found 5 instance(s) of: Unsafe inline event handler (e.g., onclick=...)"
+        ]
+      }
+    }
+  ],
+  "finalState": {
+    "success": false,
+    "iterationsUsed": 3,
+    "remainingErrors": 6
+  }
+}

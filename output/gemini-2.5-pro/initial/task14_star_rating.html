@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Star Rating Component</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        /* Main component container */
+        .rating-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container for the star icons */
+        .stars-container {
+            direction: ltr; /* Ensures stars are left-to-right */
+        }
+
+        /* Individual star styling */
+        .star {
+            font-size: 3rem; /* Larger stars */
+            color: #d3d3d3; /* Default gray color */
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            padding: 0 0.2rem;
+        }
+
+        /* Style for stars on hover or when selected */
+        .star.hover,
+        .star.selected {
+            color: #ffc107; /* Gold color */
+        }
+
+        /* Message display area */
+        #rating-message {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            color: #333;
+            min-height: 1.5rem; /* Reserve space to prevent layout shift */
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rating-widget">
+        <div class="stars-container">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <div id="rating-message"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('.star');
+            const starsContainer = document.querySelector('.stars-container');
+            const ratingMessage = document.getElementById('rating-message');
+            
+            let currentRating = 0; // Variable to store the locked rating
+
+            // Function to highlight stars up to a given value
+            function highlightStars(rating) {
+                stars.forEach(star => {
+                    // Add 'hover' class if the star's value is less than or equal to the rating
+                    if (star.dataset.value <= rating) {
+                        star.classList.add('hover');
+                    } else {
+                        star.classList.remove('hover');
+                    }
+                });
+            }
+
+            // Function to set the permanent rating
+            function setRating(rating) {
+                currentRating = rating;
+                stars.forEach(star => {
+                    // Use 'selected' class for the locked-in rating
+                    if (star.dataset.value <= currentRating) {
+                        star.classList.add('selected');
+                    } else {
+                        star.classList.remove('selected');
+                    }
+                });
+                
+                // Update the message
+                const starText = currentRating > 1 ? "stars" : "star";
+                ratingMessage.innerHTML = `You rated this ${currentRating} ${starText}!`;
+            }
+
+            // Add mouseover event to each star for hover effect
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    // When hovering, highlight stars based on the current star's value
+                    highlightStars(star.dataset.value);
+                });
+
+                // Add click event to each star to lock the rating
+                star.addEventListener('click', () => {
+                    setRating(star.dataset.value);
+                });
+            });
+
+            // Add mouseleave event to the container to reset hover effect
+            starsContainer.addEventListener('mouseleave', () => {
+                // When the mouse leaves the container, remove all 'hover' classes
+                stars.forEach(star => star.classList.remove('hover'));
+            });
+        });
+    </script>
+
+</body>
+</html>
