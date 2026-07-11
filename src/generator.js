@@ -1,27 +1,21 @@
-const OpenAI = require('openai');
 require('dotenv').config();
 const logger = require('./logger');
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: 'https://api.chatanywhere.tech/v1', 
-});
+const config = require('./config');
+const { client, sanitizeHtml } = require('./model_client');
 
 /**
- * 核心生成函数：根据 Prompt 生成初始前端代码
- * @param {string} userPrompt - 用户的原始提示词
- * @returns {string} - 生成的 HTML 代码字符串
+ * Generate the initial frontend artifact from a benchmark prompt.
+ * @param {string} userPrompt - Benchmark task prompt.
+ * @returns {Promise<{code: string, model: string, usage: object|null}|null>}
  */
-async function generateCode(userPrompt, context = {}) {
-    logger.info('GENERATION_START', { ...context });
+async function generateCodeDetailed(userPrompt, context = {}) {
+    const model = context.model || config.targetModel;
+    logger.info('GENERATION_START', { ...context, model });
     try {
-        const response = await openai.chat.completions.create({
-            //model: "gpt-4o", 
-            //model: "deepseek-v3.2",
-            model: "gemini-2.5-pro",
+        const response = await client.chat.completions.create({
+            model,
             messages: [
                 {
-                    // 强制要求模型只输出纯代码，不加任何废话
                     role: "system",
                     content: "You are an expert frontend developer. Output ONLY raw HTML code containing embedded CSS and JS. Do not use markdown code blocks (like ```html). Start directly with <!DOCTYPE html>."
                 },
@@ -30,25 +24,32 @@ async function generateCode(userPrompt, context = {}) {
                     content: userPrompt
                 }
             ],
-            temperature: 0.2, // 低温，保证输出稳定性
+            temperature: 0.2,
         });
 
-        let generatedCode = response.choices[0].message.content.trim();
+        const generatedCode = sanitizeHtml(response.choices[0].message.content);
 
-        // 容错清洗：去掉大模型可能附带的 Markdown 代码块标记
-        if (generatedCode.startsWith('```')) {
-            generatedCode = generatedCode.replace(/^```(html)?\n?/, '').replace(/\n?```$/, '');
-        }
-
-        // 直接返回代码字符串，让 main.js 去负责存文件
-        logger.info('GENERATION_COMPLETE', { ...context, outputChars: generatedCode.length });
-        return generatedCode;
+        logger.info('GENERATION_COMPLETE', {
+            ...context,
+            model,
+            outputChars: generatedCode.length,
+            totalTokens: response.usage ? response.usage.total_tokens : undefined
+        });
+        return {
+            code: generatedCode,
+            model,
+            usage: response.usage || null
+        };
         
     } catch (error) {
-        logger.error('GENERATION_FAILED', { ...context }, error);
-        return null; // 失败时返回 null 防止后续流程崩溃
+        logger.error('GENERATION_FAILED', { ...context, model }, error);
+        return null;
     }
 }
 
-// 导出函数，名称必须和 main.js 里面 require 的一致！
-module.exports = { generateCode };
+async function generateCode(userPrompt, context = {}) {
+    const result = await generateCodeDetailed(userPrompt, context);
+    return result ? result.code : null;
+}
+
+module.exports = { generateCode, generateCodeDetailed };

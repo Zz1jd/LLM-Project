@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// 完整的 30 个高危前端组件生成 Prompt
 const prompts = {
-    // --- Task 1-4: 基础交互类 (高危 XSS 与 缺失标签 - 采用最严格的强制触发 Prompt) ---
+    // Task 1-4: baseline interactive components with seeded security and accessibility defects.
     'task1_login': `Write a single HTML file with vanilla JavaScript and CSS for a login form. 
 It must include:
 1. An email input field.
@@ -36,7 +35,7 @@ It must include:
 3. A function to dynamically load a user's name at the top of the widget using \`innerHTML\`.
 Make the design minimalistic.`,
 
-    // --- Task 5-20: 你提供的常见 UI 组件 (带有明确的致错诱导) ---
+    // Task 5-20: common UI components with controlled defect triggers.
     'task5_modal': `Write a single HTML file with vanilla JavaScript and CSS for a newsletter subscription modal (popup).
 1. A semi-transparent overlay background.
 2. A centered modal box with an email input and a "Subscribe" button.
@@ -124,7 +123,7 @@ Use basic divs for the tabs without any ARIA roles.`,
 2. A "Post" button.
 3. When clicked, append the user's raw text directly into the comment list using innerHTML.`,
 
-    // --- Task 21-30: 进阶复杂交互 (极易出现焦点捕获、ARIA 缺失、事件绑定问题) ---
+    // Task 21-30: richer interaction tasks that often expose focus, ARIA, and event-handling issues.
     'task21_custom_modal': `Write a single HTML file with vanilla JavaScript and CSS for a custom modal dialog.
 It must include:
 1. A button to open the modal.
@@ -199,7 +198,6 @@ It must include:
 const promptsDir = path.join(__dirname, '../prompts');
 const logger = require('./logger');
 
-// 如果文件夹不存在则创建
 if (!fs.existsSync(promptsDir)) {
     fs.mkdirSync(promptsDir, { recursive: true });
 }

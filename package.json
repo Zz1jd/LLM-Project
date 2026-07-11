@@ -1,10 +1,15 @@
 {
   "name": "llm-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Closed-loop frontend code repair benchmark with accessibility, security, and optional screenshot feedback.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --check src/*.js && node --test test/*.test.js",
+    "vision:preflight": "node src/vision_preflight.js",
+    "experiment:pilot": "node src/pilot_experiment.js",
+    "experiment:final-smoke": "RUN_ID=final-smoke-task1-5 PILOT_TASKS=task1_login,task2_shopping_cart,task3_chat_ui,task4_dashboard,task5_modal PILOT_MODES=text-only,multimodal MAX_ITERATIONS=3 node src/pilot_experiment.js",
+    "experiment:reanalyze": "node src/reanalyze_experiment.js",
+    "experiment:aggregate": "node src/aggregate_ac_experiments.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +18,8 @@
   "dependencies": {
     "dotenv": "^17.3.1",
     "openai": "^6.29.0",
-    "pa11y": "^9.1.1"
+    "pa11y": "^9.1.1",
+    "puppeteer": "^24.39.1"
   },
   "devDependencies": {
     "eslint": "^8.57.0",

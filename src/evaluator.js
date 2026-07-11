@@ -3,8 +3,11 @@ const { ESLint } = require('eslint');
 const path = require('path');
 const fs = require('fs');
 const logger = require('./logger');
+const {
+    extractHtmlStartTags,
+    scanHtmlHeuristics
+} = require('./evaluator_heuristics');
 
-// 升级版评估函数：报告压缩 + 结构化 + 扩展安全扫描
 async function evaluateCode(filePath, context = {}) {
     logger.info('EVALUATION_START', { ...context, file: path.basename(filePath) });
     
@@ -17,26 +20,22 @@ async function evaluateCode(filePath, context = {}) {
     let a11yErrorCount = 0;
     let secErrorCount = 0;
 
-    // 结构化存储：方便后续写成 JSON 文件保存 (为论文攒数据)
     const reportData = {
         a11y: [],
         security: []
     };
 
     // ==========================================
-    // 1. Accessibility 扫描 (Pa11y)
+    // 1. Accessibility scan (Pa11y)
     // ==========================================
     logger.info('A11Y_START', { ...context, tool: 'pa11y', standard: 'WCAG2AA' });
     try {
         const fileUrl = `file://${path.resolve(filePath)}`;
-        // 建议：改用 WCAG2AA (工业界最通用标准)。AAA标准有时过于苛刻，容易导致错误数居高不下，影响你观察迭代效果。
         const a11yResults = await pa11y(fileUrl, { includeWarnings: false, includeNotices: false, standard: 'WCAG2AA' });
         const a11yErrors = a11yResults.issues.filter(issue => issue.type === 'error');
         
         a11yErrorCount = a11yErrors.length;
         if (a11yErrorCount > 0) {
-            // 【核心创新点：压缩与去重逻辑】
-            // 如果同一个错误出现在多个元素上，我们将它们合并，极大节省 Token
             const groupedA11y = {};
             a11yErrors.forEach(err => {
                 if (!groupedA11y[err.message]) groupedA11y[err.message] = [];
@@ -44,7 +43,6 @@ async function evaluateCode(filePath, context = {}) {
             });
 
             for (const [msg, selectors] of Object.entries(groupedA11y)) {
-                // 最多只列出前3个元素的选择器，避免长篇大论
                 const compactSelectors = selectors.slice(0, 3).join(', ') + (selectors.length > 3 ? ` (+${selectors.length - 3} more)` : '');
                 reportData.a11y.push(`[Rule] ${msg} | [Affected Elements] ${compactSelectors}`);
             }
@@ -55,12 +53,11 @@ async function evaluateCode(filePath, context = {}) {
     }
 
     // ==========================================
-    // 2. Security 扫描 (ESLint + 静态正则扩展)
+    // 2. Security scan (ESLint + conservative HTML heuristics)
     // ==========================================
     logger.info('SECURITY_START', { ...context, tool: 'eslint+heuristics' });
     const htmlContent = fs.readFileSync(filePath, 'utf8');
     
-    // 2.1 扫描 <script> 里的不安全 DOM 操作
     const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
     let match;
     let jsCode = '';
@@ -96,30 +93,21 @@ async function evaluateCode(filePath, context = {}) {
         }
     }
 
-    // 2.2 扩展静态分析：扫描 HTML 内联的危险操作 (补齐 ESLint 盲区)
-    const dangerousPatterns = [
-        { regex: /href\s*=\s*["']javascript:/gi, desc: 'Unsafe javascript: URI in href attribute' },
-        { regex: /on\w+\s*=\s*["']/gi, desc: 'Unsafe inline event handler (e.g., onclick=...)' },
-        { regex: /document\.write\(/gi, desc: 'Unsafe use of document.write()' }
-    ];
-
-    dangerousPatterns.forEach(pattern => {
-        const matches = [...htmlContent.matchAll(pattern.regex)];
-        if (matches.length > 0) {
-            reportData.security.push(`[HTML] Found ${matches.length} instance(s) of: ${pattern.desc}`);
-            secErrorCount += matches.length;
-            totalErrors += matches.length;
-        }
+    // Only inspect real HTML start-tag attributes to avoid false positives in
+    // metadata strings or JavaScript variable names ending with "on".
+    scanHtmlHeuristics(htmlContent, jsCode).forEach(finding => {
+        reportData.security.push(`[HTML] Found ${finding.count} instance(s) of: ${finding.desc}`);
+        secErrorCount += finding.count;
+        totalErrors += finding.count;
     });
 
     // ==========================================
-    // 3. 构建压缩版 Prompt 报告
+    // 3. Compact report for the repair prompt
     // ==========================================
     let compressedReport = '';
     if (totalErrors === 0) {
         compressedReport = 'Great job! No accessibility or security errors found. The code is clean and safe.';
     } else {
-        // 明确分离 A11y 和 Security，让大模型思路清晰
         if (reportData.a11y.length > 0) {
             compressedReport += `### Accessibility (A11y) Errors:\n` + reportData.a11y.map((err, i) => `${i+1}. ${err}`).join('\n') + `\n\n`;
         }
@@ -135,14 +123,17 @@ async function evaluateCode(filePath, context = {}) {
         securityIssues: secErrorCount
     });
 
-    // 返回多维度数据，方便 main.js 使用和存 JSON
     return {
         errorCount: totalErrors,
         a11yCount: a11yErrorCount,
         secCount: secErrorCount,
-        report: compressedReport,   // 这个是要喂给大模型的“压缩版提示词”
-        rawReportData: reportData   // 这个是准备写入 JSON 文件的“学术数据”
+        report: compressedReport,
+        rawReportData: reportData
     };
 }
 
-module.exports = { evaluateCode };
+module.exports = {
+    evaluateCode,
+    extractHtmlStartTags,
+    scanHtmlHeuristics
+};
